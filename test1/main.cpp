@@ -2,6 +2,7 @@
 #define GL_GLEXT_PROTOTYPES
 //GLEWの拡張を使うには此れ↑が必要（glGenBuffers等）
 //Linuxではこれだけで良い　おそらくGLEWのライブラリ不必要
+//http://stackoverflow.com/questions/3032386/glgenbuffers-not-defined
 #include <GLFW/glfw3.h>
 #include <cstdio>
 
