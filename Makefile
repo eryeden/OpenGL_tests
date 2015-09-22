@@ -1,24 +1,16 @@
 CC = gcc
 CXX = g++
 #libswscale
-CFLAGS+=`pkg-config --cflags libavcodec`
-CFLAGS+=`pkg-config --cflags libswscale`
-CFLAGS+=`sdl2-config --cflags`
-
-#CFLAGS+=-I/usr/local/include -I/usr/local/include/SDL2 -D_REENTRANT
+CFLAGS+=`pkg-config --cflags glfw3 glu`
 
 CXXFLAGS+=$(CFLAGS)
 
-LDFLAGS+=`pkg-config --libs libavcodec` 
-LDFLAGS+=`pkg-config --libs libswscale` 
-LDFLAGS+=`sdl2-config --libs`
-
-#LDFLAGS+=-pthread -L/usr/local/lib -lavcodec -lx264 -lavresample -lavutil -lm -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL2 -lpthread
+LDFLAGS+= `pkg-config --static --libs glfw3 glu`
 
 INCLUDES+=
 
-TARGET = test_rcvdec.bin
-SRCS = test_rcvdec dh264 v4l2cap reciever
+TARGET = gl4_test
+SRCS = main
 OBJS = $(addsuffix .o,$(SRCS))
 
 #リンクの依存関係か今のところわからない　そのため、Whole-archiveが必要になる
