@@ -1,10 +1,21 @@
-//#include <GL/glew.h>
+//Widnowsの場合
+#ifdef _MSC_VER
+#pragma comment(lib, "glfw3.lib")
+#pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "GlU32.Lib")
+#pragma comment(lib, "assimp-vc120-mt.lib")
+#pragma comment(lib, "glew32.lib")
+#include <gl/glew.h>
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #define GL_GLEXT_PROTOTYPES
 //GLEWの拡張を使うには此れ↑が必要（glGenBuffers等）
 //Linuxではこれだけで良い　おそらくGLEWのライブラリ不必要
 //http://stackoverflow.com/questions/3032386/glgenbuffers-not-defined
 #include <GLFW/glfw3.h>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 #include "shader.hpp"
@@ -51,8 +62,8 @@ int main(){
 
    glfwMakeContextCurrent(window);
 
-   //glewExperimental = GL_TRUE;
-   //glewInit();
+   glewExperimental = GL_TRUE;
+   glewInit();
 
    const GLubyte* renderer = glGetString(GL_RENDERER);
    const GLubyte* version = glGetString(GL_VERSION);
@@ -213,7 +224,7 @@ void gl_execute(GLFWwindow *window){
    //GLIはヘッダのみで構成されるのでライブラリのリンクは必要ない
    //しかし、C+11を用いて書かれるため -std=c++11 のオプションはコンパイル時に必要になる
    GLuint texture;
-   texture = createTexture("uvtemplate.DDS");
+   texture = createTexture("C:/Users/B4/Source/Repos/OpenGL_tests/test6/uvtemplate.DDS");
    
    
    
@@ -322,7 +333,7 @@ void gl_execute(GLFWwindow *window){
      こちらは２Dに写像されたピクセルごとに並列実行される
      
     */
-   GLuint shader_programme_id = LoadShaders("test_vs.glsl", "test_fs.glsl");
+   GLuint shader_programme_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/test6/test_vs.glsl", "C:/Users/B4/Source/Repos/OpenGL_tests/test6/test_fs.glsl");
 
    //座標変換について
    /*

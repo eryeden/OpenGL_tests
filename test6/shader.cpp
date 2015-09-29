@@ -1,3 +1,15 @@
+//Widnowsの場合
+#ifdef _MSC_VER
+#pragma comment(lib, "glfw3.lib")
+#pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "GlU32.Lib")
+#pragma comment(lib, "assimp-vc120-mt.lib")
+#pragma comment(lib, "glew32.lib")
+#include <gl/glew.h>
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
+
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -6,8 +18,8 @@
 #include <algorithm>
 using namespace std;
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 #define GL_GLEXT_PROTOTYPES
 //GLEWの拡張を使うには此れ↑が必要（glGenBuffers等）
