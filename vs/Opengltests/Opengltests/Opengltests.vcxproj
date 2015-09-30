@@ -40,10 +40,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\B4\Source\Repos\OpenGL_tests\Inc;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\B4\Source\Repos\OpenGL_tests\ogldev\Include;C:\Users\B4\Source\Repos\OpenGL_tests\Inc;$(IncludePath)</IncludePath>
+    <SourcePath>C:\Users\B4\Source\Repos\OpenGL_tests\ogldev\Common;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\B4\Source\Repos\OpenGL_tests\Inc;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\B4\Source\Repos\OpenGL_tests\ogldev\Include;C:\Users\B4\Source\Repos\OpenGL_tests\Inc;$(IncludePath)</IncludePath>
+    <SourcePath>C:\Users\B4\Source\Repos\OpenGL_tests\ogldev\Common;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -70,11 +72,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\test6\Importer.cpp" />
     <ClCompile Include="..\..\..\test6\main.cpp" />
     <ClCompile Include="..\..\..\test6\shader.cpp" />
     <ClCompile Include="..\..\..\test6\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\test6\Importer.hpp" />
     <ClInclude Include="..\..\..\test6\shader.hpp" />
     <ClInclude Include="..\..\..\test6\texture.hpp" />
   </ItemGroup>

@@ -62,8 +62,11 @@ int main(){
 
    glfwMakeContextCurrent(window);
 
+   //GLEWを使う場合
+#ifdef _MSC_VER
    glewExperimental = GL_TRUE;
    glewInit();
+#endif
 
    const GLubyte* renderer = glGetString(GL_RENDERER);
    const GLubyte* version = glGetString(GL_VERSION);
