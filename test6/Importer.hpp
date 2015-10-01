@@ -32,6 +32,10 @@
 #include <assimp/scene.h>       // Output data structure
 #include <assimp/postprocess.h> // Post processing flags
 
+// Include GLM
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "ogldev_util.h"
 #include "ogldev_math_3d.h"
 #include "ogldev_texture.h"
@@ -52,6 +56,62 @@ struct Vertex
 		m_normal = normal;
 	}
 };
+//
+//struct MeshEntry {
+//	MeshEntry();
+//
+//	~MeshEntry();
+//
+//	//頂点バッファ、インデックスバッファオブジェクトを生成する
+//	//void Init(const std::vector<Vertex>& Vertices,
+//	//	const std::vector<unsigned int>& Indices);
+//	virtual void Init();
+//
+//	//GLuint VB; //エントリーひとつ分の頂点バッファ
+//	//GLuint IB; //面の頂点インデックスバッファ
+//
+//	GLuint VertexBuffer;
+//	GLuint NormalBuffer;
+//	GLuint ElementBuffer;
+//
+//	GLuint ColorBuffer; //UVバッファのハンドルかColorバッファのハンドルが入る
+//
+//	unsigned int NumIndices;    //面の頂点インデックス数
+//	unsigned int MaterialIndex; //aiScene中のマテリアルインデックス
+//
+//	//モデルを呼んだ頂点座標、UV座標、頂点に対応する色、法線が入る
+//	std::vector<glm::vec3> Vertices;
+//	std::vector<glm::vec3> Normals;
+//	//面を構成するインデックス列が入る
+//	std::vector<unsigned short> Indices;
+//};
+//
+//struct MeshEntryColor : public MeshEntry{
+//	MeshEntryColor();
+//	~MeshEntryColor();
+//
+//	void Init(
+//		const std::vector<glm::vec3> &_Vertices
+//		, const std::vector<glm::vec3> &_Normals
+//		, const std::vector<glm::vec3> &_Colors
+//		, const std::vector<glm::vec3> &_Indices
+//		);
+//
+//	std::vector<glm::vec3> Colors; //頂点に対応する色情報がはいる
+//};
+//struct MeshEntryTexture : public MeshEntry{
+//	MeshEntryTexture();
+//	~MeshEntryTexture();
+//
+//	void Init(
+//		const std::vector<glm::vec3> &_Vertices
+//		, const std::vector<glm::vec3> &_Normals
+//		, const std::vector<glm::vec2> &_UVs
+//		, const std::vector<glm::vec3> &_Indices
+//		);
+//
+//	std::vector<glm::vec2> UVs; //テクスチャUV座標が入る
+//};
 
 class MdlImporter{
 public:
@@ -83,14 +143,68 @@ private:
 		~MeshEntry();
 
 		//頂点バッファ、インデックスバッファオブジェクトを生成する
-		void Init(const std::vector<Vertex>& Vertices,
-			const std::vector<unsigned int>& Indices);
+		//void Init(const std::vector<Vertex>& Vertices,
+		//	const std::vector<unsigned int>& Indices);
+		virtual void Init() = 0;
 
-		GLuint VB; //エントリーひとつ分の頂点バッファ
-		GLuint IB; //面の頂点インデックスバッファ
+		//GLuint VB; //エントリーひとつ分の頂点バッファ
+		//GLuint IB; //面の頂点インデックスバッファ
+
+		GLuint VertexBuffer;
+		GLuint NormalBuffer;
+		GLuint ElementBuffer;
+		
+		GLuint ColorBuffer; //UVバッファのハンドルかColorバッファのハンドルが入る
+
 		unsigned int NumIndices;    //面の頂点インデックス数
 		unsigned int MaterialIndex; //aiScene中のマテリアルインデックス
+
+		//モデルを呼んだ頂点座標、UV座標、頂点に対応する色、法線が入る
+		std::vector<glm::vec3> Vertices;
+		std::vector<glm::vec3> Normals;
+		//面を構成するインデックス列が入る
+		std::vector<unsigned short> Indices;
 	};
+
+	struct MeshEntryColor : public MeshEntry{
+		MeshEntryColor();
+		~MeshEntryColor();
+
+		void Init(
+			const std::vector<glm::vec3> &_Vertices
+			, const std::vector<glm::vec3> &_Normals
+			, const std::vector<glm::vec3> &_Colors
+			, const std::vector<unsigned short> &_Indices
+			);
+
+		void Init();
+
+		std::vector<glm::vec3> Colors; //頂点に対応する色情報がはいる
+	};
+	struct MeshEntryTexture : public MeshEntry{
+		MeshEntryTexture();
+		~MeshEntryTexture();
+
+		void Init(
+			const std::vector<glm::vec3> &_Vertices
+			, const std::vector<glm::vec3> &_Normals
+			, const std::vector<glm::vec2> &_UVs
+			, const std::vector<unsigned short> &_Indices
+			);
+
+		void Init();
+
+		std::vector<glm::vec2> UVs; //テクスチャUV座標が入る
+	};
+
+	////モデルを呼んだ頂点座標、UV座標、頂点に対応する色、法線が入る
+	//std::vector<glm::vec3> vertices;
+	//std::vector<glm::vec2> uvs;
+	//std::vector<glm::vec3> colors;
+	//std::vector<glm::vec3> normals;
+
+	//頂点が対応するインデックス配列がここに入る
+	//std::vector<unsigned short> indices;
 
 	std::vector<MeshEntry> m_Entries;
 	std::vector<Texture*> m_Textures;

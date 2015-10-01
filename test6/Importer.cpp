@@ -39,40 +39,134 @@
 #define INVALID_MATERIAL 0xFFFFFFFF
 
 MdlImporter::MeshEntry::MeshEntry(){
-	VB = INVALID_OGL_VALUE;
-	IB = INVALID_OGL_VALUE;
+
+	VertexBuffer = INVALID_OGL_VALUE;
+	NormalBuffer = INVALID_OGL_VALUE;
+	ElementBuffer = INVALID_OGL_VALUE;
+	ColorBuffer = INVALID_OGL_VALUE;
+
 	NumIndices = 0;
 	MaterialIndex = INVALID_MATERIAL;
 }
 
 MdlImporter::MeshEntry::~MeshEntry()
 {
-	//破棄時にバーテックスバッファ、インデックスバッファを削除
-	if (VB != INVALID_OGL_VALUE)
-	{
-		glDeleteBuffers(1, &VB);
+
+	if (VertexBuffer != INVALID_OGL_VALUE){
+		glDeleteBuffers(1, &VertexBuffer);
 	}
 
-	if (IB != INVALID_OGL_VALUE)
-	{
-		glDeleteBuffers(1, &IB);
+	if (NormalBuffer != INVALID_OGL_VALUE){
+		glDeleteBuffers(1, &NormalBuffer);
+	}
+
+	if (ElementBuffer != INVALID_OGL_VALUE){
+		glDeleteBuffers(1, &ElementBuffer);
+	}
+
+	if (ColorBuffer != INVALID_OGL_VALUE){
+		glDeleteBuffers(1, &ColorBuffer);
 	}
 }
 
-void MdlImporter::MeshEntry::Init(const std::vector<Vertex>& Vertices,
-	const std::vector<unsigned int>& Indices){
 
-	NumIndices = Indices.size();
+//
+//void MdlImporter::MeshEntry::Init(){
+//	NumIndices = Indices.size();
+//}
 
-	//バーテックスバッファを転送
-	glGenBuffers(1, &VB);
-	glBindBuffer(GL_ARRAY_BUFFER, VB);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * Vertices.size(), &Vertices[0], GL_STATIC_DRAW);
-	//インデックスバッファを転送
-	glGenBuffers(1, &IB);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * NumIndices, &Indices[0], GL_STATIC_DRAW);
+MdlImporter::MeshEntryColor::MeshEntryColor()
+	:MdlImporter::MeshEntry()
+{
+	;
 }
+
+MdlImporter::MeshEntryTexture::MeshEntryTexture()
+	: MdlImporter::MeshEntry()
+{
+	;
+}
+
+void MdlImporter::MeshEntryColor::Init(
+	const std::vector<glm::vec3> &_Vertices
+	, const std::vector<glm::vec3> &_Normals
+	, const std::vector<glm::vec3> &_Colors
+	, const std::vector<unsigned short> &_Indices
+	){
+	
+	glGenBuffers(1, &VertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER
+		, _Vertices.size() * sizeof(glm::vec3)
+		, &_Vertices[0]
+		, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &NormalBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, NormalBuffer);
+	glBufferData(GL_ARRAY_BUFFER
+		, _Normals.size() * sizeof(glm::vec3)
+		, &_Normals[0]
+		, GL_STATIC_DRAW);
+	
+	glGenBuffers(1, &ColorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, ColorBuffer);
+	glBufferData(GL_ARRAY_BUFFER
+		, _Colors.size() * sizeof(glm::vec3)
+		, &_Colors[0]
+		, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &ElementBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, ElementBuffer);
+	glBufferData(GL_ARRAY_BUFFER
+		, _Indices.size() * sizeof(unsigned short)
+		, &_Indices[0]
+		, GL_STATIC_DRAW);
+
+}
+void MdlImporter::MeshEntryColor::Init(){
+	Init(Vertices, Normals, Colors, Indices);
+}
+
+void MdlImporter::MeshEntryTexture::Init(
+	const std::vector<glm::vec3> &_Vertices
+	, const std::vector<glm::vec3> &_Normals
+	, const std::vector<glm::vec2> &_UVs
+	, const std::vector<unsigned short> &_Indices
+	){
+
+	glGenBuffers(1, &VertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER
+		, _Vertices.size() * sizeof(glm::vec3)
+		, &_Vertices[0]
+		, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &NormalBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, NormalBuffer);
+	glBufferData(GL_ARRAY_BUFFER
+		, _Normals.size() * sizeof(glm::vec3)
+		, &_Normals[0]
+		, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &ColorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, ColorBuffer);
+	glBufferData(GL_ARRAY_BUFFER
+		, _UVs.size() * sizeof(glm::vec2)
+		, &_UVs[0]
+		, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &ElementBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, ElementBuffer);
+	glBufferData(GL_ARRAY_BUFFER
+		, _Indices.size() * sizeof(unsigned short)
+		, &_Indices[0]
+		, GL_STATIC_DRAW);
+
+}
+void MdlImporter::MeshEntryTexture::Init(){
+	Init(Vertices, Normals, UVs, Indices);
+}
+
 
 MdlImporter::MdlImporter(){
 	;

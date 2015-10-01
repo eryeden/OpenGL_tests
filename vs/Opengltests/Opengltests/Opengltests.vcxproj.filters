@@ -39,4 +39,10 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\test6\StandardShading_vs.glsl" />
+    <None Include="..\..\..\test6\StandardShading_fs.glsl" />
+    <None Include="..\..\..\test6\StandardShading_fs_non_tex.glsl" />
+    <None Include="..\..\..\test6\StandardShading_vs_non_tex.glsl" />
+  </ItemGroup>
 </Project>

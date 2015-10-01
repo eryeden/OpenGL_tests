@@ -41,6 +41,26 @@ bool parse_file_into_str (
 
 
 
+/*
+	VBOIndexingについて
+	VBOIndexingを用いる場合
+	必要なもの
+	＊頂点データ
+	＊それぞれの頂点における法線データ
+	＊それぞれの頂点がどの三角形を構成するのか記録したインデックスデータ
+	＊色情報(それぞれの頂点におけるテクスチャのUV座標、もしくは、それぞれの頂点の色)
+
+	glDrawElementsを呼べば、シェーダーには対応する頂点の
+	＊座標
+	＊UV座標、もしくは色情報
+	＊法線情報
+	が送られ、これらより最終的な頂点座標を出力するのがバーテックスシェーダーの仕事であるので、
+	3角形の面を構成する頂点の配列情報などはバーテックスシェーダにとっては必要ない。
+	そのため、VBOIndexingを用いるかどうかはシェーダにとって関係のない話である。
+	フラグメントシェーダにとっても同様である。
+*/
+
+
 int main(){
 
    if(!glfwInit()){
@@ -48,6 +68,7 @@ int main(){
       return 1;
    }
 
+//MAC OS Xでは必要らしい
 //   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 //   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 //   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
