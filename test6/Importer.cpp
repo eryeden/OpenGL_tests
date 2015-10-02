@@ -208,7 +208,7 @@ bool MdlImporter::Load(const std::string& Filename)
 	return Ret;
 }
 
-bool MdlImporter::Load(const std::string & Filename, const Vector3f & colour){
+bool MdlImporter::Load(const std::string & Filename, const glm::vec3 & _Color){
 	// Release the previously loaded mesh (if it exists)
 	Clear();
 
@@ -222,7 +222,7 @@ bool MdlImporter::Load(const std::string & Filename, const Vector3f & colour){
 	if (pScene) {
 		//aiSceneインスタンスよりMeshEntryのコンテナを生成する
 		//頂点データ、マテリアルデータ(テクスチャデータ)を読みVBOを生成
-		Ret = InitFromScene(pScene, Filename);
+		Ret = InitFromScene(pScene, Filename, _Color);
 	}
 	else {
 		printf("Error parsing '%s': '%s'\n", Filename.c_str(), Importer.GetErrorString());
@@ -230,6 +230,8 @@ bool MdlImporter::Load(const std::string & Filename, const Vector3f & colour){
 
 	return Ret;
 }
+
+
 
 bool MdlImporter::InitFromScene(const aiScene* pScene, const std::string& Filename)
 {
@@ -251,6 +253,31 @@ bool MdlImporter::InitFromScene(const aiScene* pScene, const std::string& Filena
 	//ここでマテリアル（テクスチャデータ）の生成を行う
 	return InitMaterials(pScene, Filename);
 }
+
+
+//テクスチャを使用しない場合
+//テクスチャの代わりにVEC3の色情報が与えられるので、それで色づけする
+//常に真が返される
+bool MdlImporter::InitFromScene(const aiScene* pScene, const std::string& Filename, const glm::vec3 & _Color)
+{
+
+	//含まれるaiSceneエントリ数によりコンテナ数を更新
+	m_Entries.resize(pScene->mNumMeshes);
+	//テクスチャコンテナの数も更新
+	//テクスチャは使わない
+	//m_Textures.resize(pScene->mNumMaterials);
+
+	// Initialize the meshes in the scene one by one
+	for (unsigned int i = 0; i < m_Entries.size(); i++) {
+		//メッシュへのポインタが得られるので、これよりメッシュエントリのi番目に頂点、頂点配列,
+		//各頂点にカラー情報を付加する
+		const aiMesh* paiMesh = pScene->mMeshes[i];
+		InitMesh(i, paiMesh, _Color);
+	}
+	
+	return true;
+}
+
 
 //VBOを生成
 void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh)
@@ -290,6 +317,43 @@ void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 	//おそらくVBOの初期化等を行わせる
 }
 
+//VBOを生成
+void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh, const glm::vec3 & Color)
+{
+	m_Entries[Index].MaterialIndex = paiMesh->mMaterialIndex;
+
+	std::vector<Vertex> Vertices;
+	std::vector<unsigned int> Indices;
+
+	const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
+
+	for (unsigned int i = 0; i < paiMesh->mNumVertices; i++) {
+		const aiVector3D* pPos = &(paiMesh->mVertices[i]); //頂点
+		const aiVector3D* pNormal = &(paiMesh->mNormals[i]); //法線
+		const aiVector3D* pTexCoord = paiMesh->HasTextureCoords(0) ? &(paiMesh->mTextureCoords[0][i]) : &Zero3D;
+		//テクスチャ持っていればUVを返す
+		Vertex v(Vector3f(pPos->x, pPos->y, pPos->z),
+			Vector2f(pTexCoord->x, pTexCoord->y),
+			Vector3f(pNormal->x, pNormal->y, pNormal->z));
+
+		Vertices.push_back(v); //頂点コンテナに頂点XYZ、テクスチャUV、法線XYZを格納
+	}
+
+	for (unsigned int i = 0; i < paiMesh->mNumFaces; i++) {
+		const aiFace& Face = paiMesh->mFaces[i];
+		assert(Face.mNumIndices == 3);
+		Indices.push_back(Face.mIndices[0]);
+		Indices.push_back(Face.mIndices[1]);
+		Indices.push_back(Face.mIndices[2]);
+		//面を構成する頂点インデックスを頂点コンテナに格納
+	}
+
+	//ここでVBOを生成
+	m_Entries[Index].Init(Vertices, Indices);
+	//メッシュエントリクラスに頂点、
+	//頂点インデックスコンテナをわたし、
+	//おそらくVBOの初期化等を行わせる
+}
 
 //メッシュエントリの初期化（VBOの生成）の後呼ばれる 要ファイルパス
 //テクスチャデータの生成　ASSIMPSではマテリアルと呼ばれているらしい

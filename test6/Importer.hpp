@@ -120,8 +120,8 @@ public:
 
 	//モデル読み込み
 	bool Load(const std::string & filename); //テクスチャを適用
-	bool Load(const std::string & filename, const Vector3f & colour);
-		//Vector3fによる色を適用
+	bool Load(const std::string & filename, const glm::vec3 & colour);//Vector3fによる色を適用
+	
 	//モデル描画
 	void Render();
 	
@@ -129,7 +129,9 @@ public:
 private:
 
 	bool InitFromScene(const aiScene* pScene, const std::string& Filename);
+	bool InitFromScene(const aiScene* pScene, const std::string& Filename, const glm::vec3 & Color);
 	void InitMesh(unsigned int Index, const aiMesh* paiMesh);
+	void InitMesh(unsigned int Index, const aiMesh* paiMesh, const glm::vec3 & Color);
 	bool InitMaterials(const aiScene* pScene, const std::string& Filename);
 	void Clear();
 
