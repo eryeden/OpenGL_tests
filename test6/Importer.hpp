@@ -1,16 +1,36 @@
 #ifndef IMPORTER_HPP
 #define IMPORTER_HPP
+
+////Widnows�̏ꍇ
+//#ifdef _MSC_VER
+//#pragma comment(lib, "glfw3.lib")
+//#pragma comment(lib, "opengl32.lib")
+//#pragma comment(lib, "GlU32.Lib")
+//#pragma comment(lib, "assimp-vc120-mt.lib")
+//#pragma comment(lib, "glew32.lib")
+//#include <gl/glew.h>
+//#define _CRT_SECURE_NO_WARNINGS
+//#endif
+
 //Widnows�̏ꍇ
+#if (_MSC_VER == 1900)	 //Visual Studio 2015
+#pragma comment(lib, "glfw3-vc140.lib")
+#pragma comment(lib, "assimp-vc140.lib")
+#endif
+
+#if (_MSC_VER == 1800)	 //Visual Studio 2013
+#pragma comment(lib, "glfw3-vc120.lib")  // glfw3-vc120.lib
+#pragma comment(lib, "assimp-vc120.lib")  //assimp-vc120.lib
+#endif
+
 #ifdef _MSC_VER
-#pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "GlU32.Lib")
-#pragma comment(lib, "assimp-vc120-mt.lib")
 #pragma comment(lib, "glew32.lib")
+
 #include <gl/glew.h>
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-
 
 #include <stdio.h>
 #include <string>
@@ -36,9 +56,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "ogldev_util.h"
-#include "ogldev_math_3d.h"
-#include "ogldev_texture.h"
+#include <ogldev_util.h>
+#include <ogldev_math_3d.h>
+#include <ogldev_texture.h>
 
 struct Vertex
 {

@@ -1,10 +1,30 @@
+////Widnowsの場合
+//#ifdef _MSC_VER
+//#pragma comment(lib, "glfw3.lib")
+//#pragma comment(lib, "opengl32.lib")
+//#pragma comment(lib, "GlU32.Lib")
+//#pragma comment(lib, "assimp-vc120-mt.lib")
+//#pragma comment(lib, "glew32.lib")
+//#include <gl/glew.h>
+//#define _CRT_SECURE_NO_WARNINGS
+//#endif
+
 //Widnowsの場合
+#if (_MSC_VER == 1900)	 //Visual Studio 2015
+#pragma comment(lib, "glfw3-vc140.lib")
+#pragma comment(lib, "assimp-vc140.lib")
+#endif
+
+#if (_MSC_VER == 1800)	 //Visual Studio 2013
+#pragma comment(lib, "glfw3-vc120")  // glfw3-vc120.lib
+#pragma comment(lib, "assimp-vc120.lib")  //assimp-vc120.lib
+#endif
+
 #ifdef _MSC_VER
-#pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "GlU32.Lib")
-#pragma comment(lib, "assimp-vc120-mt.lib")
 #pragma comment(lib, "glew32.lib")
+
 #include <gl/glew.h>
 #define _CRT_SECURE_NO_WARNINGS
 #endif
