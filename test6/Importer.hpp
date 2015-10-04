@@ -135,7 +135,7 @@ struct Vertex
 
 class MdlImporter{
 public:
-	MdlImporter();
+	MdlImporter(const GLuint &_ShaderIDNonTexture, const GLuint &_ShaderIDTexture);
 	~MdlImporter();
 
 	//モデル読み込み
@@ -158,16 +158,31 @@ private:
 	void RenderTexture();
 	void RenderColor();
 
+	GLuint ShaderIDNonTexture;
+	GLuint ShaderIDTexture;
+
 
 	struct MeshEntry {
 		MeshEntry();
 
-		~MeshEntry();
+		virtual ~MeshEntry();
 
 		//頂点バッファ、インデックスバッファオブジェクトを生成する
 		//void Init(const std::vector<Vertex>& Vertices,
 		//	const std::vector<unsigned int>& Indices);
-		virtual void Init() = 0;
+		void Init(
+			const std::vector<glm::vec3> &_Vertices
+			, const std::vector<glm::vec3> &_Normals
+			, const std::vector<glm::vec3> &_Colors
+			, const std::vector<unsigned int> &_Indices
+			);
+		void Init(
+			const std::vector<glm::vec3> &_Vertices
+			, const std::vector<glm::vec3> &_Normals
+			, const std::vector<glm::vec2> &_UVs
+			, const std::vector<unsigned int> &_Indices
+			);
+
 
 		//GLuint VB; //エントリーひとつ分の頂点バッファ
 		//GLuint IB; //面の頂点インデックスバッファ
@@ -182,51 +197,20 @@ private:
 		unsigned int MaterialIndex; //aiScene中のマテリアルインデックス
 
 		//モデルを呼んだ頂点座標、UV座標、頂点に対応する色、法線が入る
-		std::vector<glm::vec3> Vertices;
-		std::vector<glm::vec3> Normals;
+		//std::vector<glm::vec3> Vertices;
+		//std::vector<glm::vec3> Normals;
 		//面を構成するインデックス列が入る
-		std::vector<unsigned short> Indices;
+		//std::vector<unsigned short> Indices;
+
+		/*
+			//カラー用
+			std::vector<glm::vec3> Colors;
+			//テクスチャUV座標
+			std::vector<glm::vec2> UVs;
+		*/
 	};
 
-	struct MeshEntryColor : public MeshEntry{
-		MeshEntryColor();
-		~MeshEntryColor();
-
-		void Init(
-			const std::vector<glm::vec3> &_Vertices
-			, const std::vector<glm::vec3> &_Normals
-			, const std::vector<glm::vec3> &_Colors
-			, const std::vector<unsigned short> &_Indices
-			);
-
-		void Init();
-
-		std::vector<glm::vec3> Colors; //頂点に対応する色情報がはいる
-	};
-	struct MeshEntryTexture : public MeshEntry{
-		MeshEntryTexture();
-		~MeshEntryTexture();
-
-		void Init(
-			const std::vector<glm::vec3> &_Vertices
-			, const std::vector<glm::vec3> &_Normals
-			, const std::vector<glm::vec2> &_UVs
-			, const std::vector<unsigned short> &_Indices
-			);
-
-		void Init();
-
-		std::vector<glm::vec2> UVs; //テクスチャUV座標が入る
-	};
-
-	////モデルを呼んだ頂点座標、UV座標、頂点に対応する色、法線が入る
-	//std::vector<glm::vec3> vertices;
-	//std::vector<glm::vec2> uvs;
-	//std::vector<glm::vec3> colors;
-	//std::vector<glm::vec3> normals;
-
-	//頂点が対応するインデックス配列がここに入る
-	//std::vector<unsigned short> indices;
+	bool UseTexture;
 
 	std::vector<MeshEntry> m_Entries;
 	std::vector<Texture*> m_Textures;

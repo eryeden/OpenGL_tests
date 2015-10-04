@@ -38,6 +38,8 @@
 #include "Importer.hpp"
 #define INVALID_MATERIAL 0xFFFFFFFF
 
+using namespace glm;
+
 MdlImporter::MeshEntry::MeshEntry(){
 
 	VertexBuffer = INVALID_OGL_VALUE;
@@ -69,29 +71,11 @@ MdlImporter::MeshEntry::~MeshEntry()
 	}
 }
 
-
-//
-//void MdlImporter::MeshEntry::Init(){
-//	NumIndices = Indices.size();
-//}
-
-MdlImporter::MeshEntryColor::MeshEntryColor()
-	:MdlImporter::MeshEntry()
-{
-	;
-}
-
-MdlImporter::MeshEntryTexture::MeshEntryTexture()
-	: MdlImporter::MeshEntry()
-{
-	;
-}
-
-void MdlImporter::MeshEntryColor::Init(
+void MdlImporter::MeshEntry::Init(
 	const std::vector<glm::vec3> &_Vertices
 	, const std::vector<glm::vec3> &_Normals
 	, const std::vector<glm::vec3> &_Colors
-	, const std::vector<unsigned short> &_Indices
+	, const std::vector<unsigned int> &_Indices
 	){
 	
 	glGenBuffers(1, &VertexBuffer);
@@ -118,20 +102,19 @@ void MdlImporter::MeshEntryColor::Init(
 	glGenBuffers(1, &ElementBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, ElementBuffer);
 	glBufferData(GL_ARRAY_BUFFER
-		, _Indices.size() * sizeof(unsigned short)
+		, _Indices.size() * sizeof(unsigned int)
 		, &_Indices[0]
 		, GL_STATIC_DRAW);
 
-}
-void MdlImporter::MeshEntryColor::Init(){
-	Init(Vertices, Normals, Colors, Indices);
+	NumIndices = _Indices.size();
+
 }
 
-void MdlImporter::MeshEntryTexture::Init(
+void MdlImporter::MeshEntry::Init(
 	const std::vector<glm::vec3> &_Vertices
 	, const std::vector<glm::vec3> &_Normals
 	, const std::vector<glm::vec2> &_UVs
-	, const std::vector<unsigned short> &_Indices
+	, const std::vector<unsigned int> &_Indices
 	){
 
 	glGenBuffers(1, &VertexBuffer);
@@ -158,18 +141,18 @@ void MdlImporter::MeshEntryTexture::Init(
 	glGenBuffers(1, &ElementBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, ElementBuffer);
 	glBufferData(GL_ARRAY_BUFFER
-		, _Indices.size() * sizeof(unsigned short)
+		, _Indices.size() * sizeof(unsigned int)
 		, &_Indices[0]
 		, GL_STATIC_DRAW);
 
-}
-void MdlImporter::MeshEntryTexture::Init(){
-	Init(Vertices, Normals, UVs, Indices);
+	NumIndices = _Indices.size();
 }
 
 
-MdlImporter::MdlImporter(){
-	;
+MdlImporter::MdlImporter(const GLuint &_ShaderIDNonTexture, const GLuint &_ShaderIDTexture){
+	UseTexture = false;
+	ShaderIDNonTexture = _ShaderIDNonTexture;
+	ShaderIDTexture = _ShaderIDTexture;
 }
 
 MdlImporter::~MdlImporter(){
@@ -187,6 +170,8 @@ bool MdlImporter::Load(const std::string& Filename)
 {
 	// Release the previously loaded mesh (if it exists)
 	Clear();
+
+	UseTexture = true;
 
 	bool Ret = false;
 	Assimp::Importer Importer;
@@ -212,6 +197,8 @@ bool MdlImporter::Load(const std::string & Filename, const glm::vec3 & _Color){
 	// Release the previously loaded mesh (if it exists)
 	Clear();
 
+	UseTexture = false;
+
 	bool Ret = false;
 	Assimp::Importer Importer;
 
@@ -230,8 +217,6 @@ bool MdlImporter::Load(const std::string & Filename, const glm::vec3 & _Color){
 
 	return Ret;
 }
-
-
 
 bool MdlImporter::InitFromScene(const aiScene* pScene, const std::string& Filename)
 {
@@ -284,8 +269,17 @@ void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 {
 	m_Entries[Index].MaterialIndex = paiMesh->mMaterialIndex;
 
-	std::vector<Vertex> Vertices;
+	//std::vector<Vertex> Vertices;
+	//std::vector<unsigned int> Indices;
+
+	//頂点座標
+	std::vector<glm::vec3> Vertices;
+	//法線
+	std::vector<glm::vec3> Normals;
+	//面を構成するインデックス列が入る
 	std::vector<unsigned int> Indices;
+	//テクスチャUV座標
+	std::vector<glm::vec2> UVs;
 
 	const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -293,12 +287,12 @@ void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 		const aiVector3D* pPos = &(paiMesh->mVertices[i]); //頂点
 		const aiVector3D* pNormal = &(paiMesh->mNormals[i]); //法線
 		const aiVector3D* pTexCoord = paiMesh->HasTextureCoords(0) ? &(paiMesh->mTextureCoords[0][i]) : &Zero3D;
-		//テクスチャ持っていればUVを返す
-		Vertex v(Vector3f(pPos->x, pPos->y, pPos->z),
-			Vector2f(pTexCoord->x, pTexCoord->y),
-			Vector3f(pNormal->x, pNormal->y, pNormal->z));
 
-		Vertices.push_back(v); //頂点コンテナに頂点XYZ、テクスチャUV、法線XYZを格納
+		//ここで頂点座標、法線、UV座標を追加する
+		Vertices.push_back(vec3(pPos->x, pPos->y, pPos->z)); //頂点座標
+		Normals.push_back(vec3(pNormal->x, pNormal->y, pNormal->z)); //法線
+		UVs.push_back(vec2(pTexCoord->x, pTexCoord->y)); //UV座標
+
 	}
 
 	for (unsigned int i = 0; i < paiMesh->mNumFaces; i++) {
@@ -311,48 +305,57 @@ void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 	}
 
 	//ここでVBOを生成
-	m_Entries[Index].Init(Vertices, Indices);
+	m_Entries[Index].Init(Vertices, Normals, UVs, Indices);
 	//メッシュエントリクラスに頂点、
 	//頂点インデックスコンテナをわたし、
 	//おそらくVBOの初期化等を行わせる
 }
 
 //VBOを生成
-void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh, const glm::vec3 & Color)
+void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh, const glm::vec3 & _Color)
 {
 	m_Entries[Index].MaterialIndex = paiMesh->mMaterialIndex;
 
-	std::vector<Vertex> Vertices;
+	//std::vector<Vertex> Vertices;
+	//std::vector<unsigned int> Indices;
+
+	//頂点座標
+	std::vector<glm::vec3> Vertices;
+	//法線
+	std::vector<glm::vec3> Normals;
+	//面を構成するインデックス列が入る
 	std::vector<unsigned int> Indices;
+	//カラー用
+	std::vector<glm::vec3> Colors;
 
 	const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
 	for (unsigned int i = 0; i < paiMesh->mNumVertices; i++) {
+		//テクスチャ情報は扱わない
+
 		const aiVector3D* pPos = &(paiMesh->mVertices[i]); //頂点
 		const aiVector3D* pNormal = &(paiMesh->mNormals[i]); //法線
-		const aiVector3D* pTexCoord = paiMesh->HasTextureCoords(0) ? &(paiMesh->mTextureCoords[0][i]) : &Zero3D;
-		//テクスチャ持っていればUVを返す
-		Vertex v(Vector3f(pPos->x, pPos->y, pPos->z),
-			Vector2f(pTexCoord->x, pTexCoord->y),
-			Vector3f(pNormal->x, pNormal->y, pNormal->z));
-
-		Vertices.push_back(v); //頂点コンテナに頂点XYZ、テクスチャUV、法線XYZを格納
+		
+		//ここで頂点座標、法線、色情報を追加する
+		Vertices.push_back(vec3(pPos->x, pPos->y, pPos->z)); //頂点座標
+		Normals.push_back(vec3(pNormal->x, pNormal->y, pNormal->z)); //法線
+		Colors.push_back(_Color); //色情報
 	}
 
+	//面を構成する頂点インデックスを頂点コンテナに格納
 	for (unsigned int i = 0; i < paiMesh->mNumFaces; i++) {
 		const aiFace& Face = paiMesh->mFaces[i];
 		assert(Face.mNumIndices == 3);
 		Indices.push_back(Face.mIndices[0]);
 		Indices.push_back(Face.mIndices[1]);
-		Indices.push_back(Face.mIndices[2]);
-		//面を構成する頂点インデックスを頂点コンテナに格納
+		Indices.push_back(Face.mIndices[2]);	
 	}
 
 	//ここでVBOを生成
-	m_Entries[Index].Init(Vertices, Indices);
-	//メッシュエントリクラスに頂点、
-	//頂点インデックスコンテナをわたし、
-	//おそらくVBOの初期化等を行わせる
+	m_Entries[Index].Init(Vertices, Normals, Colors, Indices);
+
+	
+
 }
 
 //メッシュエントリの初期化（VBOの生成）の後呼ばれる 要ファイルパス
@@ -419,17 +422,51 @@ bool MdlImporter::InitMaterials(const aiScene* pScene, const std::string& Filena
 
 
 void MdlImporter::RenderTexture(){
+
+	//テクスチャ描画するシェーダーを使用
+	glUseProgram(ShaderIDTexture);
+
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
 	for (unsigned int i = 0; i < m_Entries.size(); i++) {
-		glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].VB);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) 12);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) 20);
+		//glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].VB);
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) 12);
+		//glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) 20);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Entries[i].IB);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Entries[i].IB);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].VertexBuffer);
+		glVertexAttribPointer(
+			0
+			, 3
+			, GL_FLOAT
+			, GL_FALSE
+			, 0
+			, (void *)0
+			);
+		glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].ColorBuffer);
+		glVertexAttribPointer(
+			1
+			, 2
+			, GL_FLOAT
+			, GL_FALSE
+			, 0
+			, (void *)0
+			);
+		glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].NormalBuffer);
+		glVertexAttribPointer(
+			2
+			, 3
+			, GL_FLOAT
+			, GL_FALSE
+			, 0
+			, (void *)0
+			);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Entries[i].ElementBuffer);
 
 		const unsigned int MaterialIndex = m_Entries[i].MaterialIndex;
 
@@ -445,26 +482,56 @@ void MdlImporter::RenderTexture(){
 	glDisableVertexAttribArray(2);
 }
 
+
+//Use NON-TEXTURED shader
 void MdlImporter::RenderColor(){
+
+	//単に色つけするだけのシェーダーを使用
+	glUseProgram(ShaderIDNonTexture);
+
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
 	for (unsigned int i = 0; i < m_Entries.size(); i++) {
-		glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].VB);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) 12);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) 20);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Entries[i].IB);
+		glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].VertexBuffer);
+		glVertexAttribPointer(
+				0
+				, 3
+				, GL_FLOAT
+				, GL_FALSE
+				, 0
+				, (void *)0
+			);
+		glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].ColorBuffer);
+		glVertexAttribPointer(
+			1
+			, 3
+			, GL_FLOAT
+			, GL_FALSE
+			, 0
+			, (void *)0
+			);
+		glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].NormalBuffer);
+		glVertexAttribPointer(
+			2
+			, 3
+			, GL_FLOAT
+			, GL_FALSE
+			, 0
+			, (void *)0
+			);
 
-		const unsigned int MaterialIndex = m_Entries[i].MaterialIndex;
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Entries[i].ElementBuffer);
 
-		if (MaterialIndex < m_Textures.size() && m_Textures[MaterialIndex]) {
-			m_Textures[MaterialIndex]->Bind(GL_TEXTURE0);
-		}
+		glDrawElements(GL_TRIANGLES
+			, m_Entries[i].NumIndices
+			, GL_UNSIGNED_INT
+			, (void *)0
+			);
 
-		glDrawElements(GL_TRIANGLES, m_Entries[i].NumIndices, GL_UNSIGNED_INT, 0);
+
 	}
 
 	glDisableVertexAttribArray(0);
@@ -476,30 +543,12 @@ void MdlImporter::RenderColor(){
 //描画
 void MdlImporter::Render()
 {
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-
-	for (unsigned int i = 0; i < m_Entries.size(); i++) {
-		glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].VB);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) 12);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) 20);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Entries[i].IB);
-
-		const unsigned int MaterialIndex = m_Entries[i].MaterialIndex;
-
-		if (MaterialIndex < m_Textures.size() && m_Textures[MaterialIndex]) {
-			m_Textures[MaterialIndex]->Bind(GL_TEXTURE0);
-		}
-
-		glDrawElements(GL_TRIANGLES, m_Entries[i].NumIndices, GL_UNSIGNED_INT, 0);
+	if (UseTexture) {
+		RenderTexture();
 	}
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
+	else {
+		RenderColor();
+	}
 }
 
 

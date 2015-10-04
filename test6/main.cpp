@@ -269,12 +269,7 @@ void gl_execute(GLFWwindow *window){
    //しかし、C+11を用いて書かれるため -std=c++11 のオプションはコンパイル時に必要になる
    GLuint texture;
    texture = createTexture("C:/Users/B4/Source/Repos/OpenGL_tests/test6/uvtemplate.DDS");
-   
-   
-   
-   
-   
-   
+
    
    //###################TEXTURE################################
 
