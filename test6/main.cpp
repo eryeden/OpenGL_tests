@@ -51,6 +51,7 @@ using namespace glm;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "Importer.hpp"
 
 void gl_execute(GLFWwindow *window);
 void _update_fps_counter(GLFWwindow * window);
