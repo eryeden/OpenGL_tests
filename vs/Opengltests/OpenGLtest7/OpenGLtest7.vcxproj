@@ -130,11 +130,13 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\test7\Importer.cpp" />
     <ClCompile Include="..\..\..\test7\main.cpp" />
+    <ClCompile Include="..\..\..\test7\Object.cpp" />
     <ClCompile Include="..\..\..\test7\shader.cpp" />
     <ClCompile Include="..\..\..\test7\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\test7\Importer.hpp" />
+    <ClInclude Include="..\..\..\test7\Object.hpp" />
     <ClInclude Include="..\..\..\test7\shader.hpp" />
     <ClInclude Include="..\..\..\test7\texture.hpp" />
   </ItemGroup>
