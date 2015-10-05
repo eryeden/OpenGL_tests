@@ -73,6 +73,12 @@
     <LibraryPath>$(SolutionDir)../../Lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)../../ogldev/Common;$(SourcePath)</SourcePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)../../ogldev/Include;$(SolutionDir)../../Inc;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(SolutionDir)../../Lib;</LibraryPath>
+    <SourcePath>$(VC_SourcePath);$(SolutionDir)../../ogldev/Common;</SourcePath>
+    <ExecutablePath>$(SolutionDir)../../Dlls;$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>

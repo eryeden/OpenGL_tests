@@ -43,6 +43,9 @@ using namespace glm;
 
 #include "Importer.hpp"
 
+//家の場合
+//#define KIKUTI_HOME
+
 void gl_execute(GLFWwindow *window);
 void _update_fps_counter(GLFWwindow * window);
 
@@ -105,10 +108,32 @@ void gl_execute(GLFWwindow *window) {
    //GLuint shader_nontex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/test6/test_vs.glsl", "C:/Users/B4/Source/Repos/OpenGL_tests/test6/test_fs.glsl");
    //GLuint shader_usetex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/test6/test_vs.glsl", "C:/Users/B4/Source/Repos/OpenGL_tests/test6/test_fs.glsl");
 
-	GLuint shader_nontex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/test7/StandardShading_vs_non_tex.glsl"
-		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/test7/StandardShading_fs_non_tex.glsl");
-	GLuint shader_usetex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/test7/StandardShading_vs.glsl"
-		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/test7/StandardShading_fs.glsl");
+
+#ifdef KIKUTI_HOME
+	GLuint shader_nontex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
+		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl");
+	GLuint shader_usetex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs.glsl"
+		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs.glsl");
+#else
+	GLuint shader_nontex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
+		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl");
+	GLuint shader_usetex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs.glsl"
+		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs.glsl");
+#endif
+
+//#if (_MSC_VER == 1900)	 //Visual Studio 2015
+//	GLuint shader_nontex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
+//		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl");
+//	GLuint shader_usetex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs.glsl"
+//		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs.glsl");
+//#endif
+//
+//#if (_MSC_VER == 1800)	 //Visual Studio 2013
+//	GLuint shader_nontex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
+//		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl");
+//	GLuint shader_usetex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs.glsl"
+//		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs.glsl");
+//#endif
 
 
 
@@ -134,6 +159,12 @@ void gl_execute(GLFWwindow *window) {
 	   */
 
 	mat4 Model = mat4(1.0f); // 単位行列
+	Model = mat4(
+		  1.0f, 0.0f, 0.0f, 0.0f
+		, 0.0f, 1.0f, 0.0f, 0.0f
+		, 0.0f, 0.0f, 1.0f, 0.0f
+		, 0.0f, 0.0f, 0.0f, 1.0f
+	);
 	mat4 View = lookAt(
 		vec3(5, 5, 5),
 		vec3(0, 0, 0),
@@ -153,11 +184,33 @@ void gl_execute(GLFWwindow *window) {
 	GLuint MatrixID_V = glGetUniformLocation(shader_nontex_id, "V");
 	GLuint MatrixID_M = glGetUniformLocation(shader_nontex_id, "M");
 	GLuint Vector3ID_LightPosition = glGetUniformLocation(shader_nontex_id, "LightPosition_worldspace");
-
+	vec3 lightPos = vec3(30, 30, 30);
 
 	MdlImporter imptr(shader_nontex_id, shader_usetex_id);
+
+#ifdef KIKUTI_HOME
 	imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4)); //#cc00000
-	//imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/cube1.obj", vec3(1, 1, 1)); //#cc00000
+	 //imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/cube1.obj", vec3(1, 1, 1)); //#cc00000
+#else
+	imptr.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/stoadmm.stl", vec3(1, 0.85, 0)); //#cc00000
+	//imptr.Load("C:\Users\B4\Source\Repos\OpenGL_tests\models/cube1.obj", vec3(1, 1, 1)); //#cc00000
+
+	//imptr.Load("C:/Users/B4/OneDrive/Documents/Models/PersonalComputer.stl", vec3(0, 0.8, 0.8)); //#cc00000
+
+#endif
+
+
+//#if (_MSC_VER == 1900)	 //Visual Studio 2015
+//	imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4)); //#cc00000
+//	//imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/cube1.obj", vec3(1, 1, 1)); //#cc00000
+//#endif
+//
+//#if (_MSC_VER == 1800)	 //Visual Studio 2013
+//	imptr.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/stoadmm.stl", vec3(0.8, 0.2, 0.4)); //#cc00000
+//	//imptr.Load("C:\Users\B4\Source\Repos\OpenGL_tests\models/cube1.obj", vec3(1, 1, 1)); //#cc00000
+//#endif
+
+
 
 	int width, height;
 
@@ -169,7 +222,7 @@ void gl_execute(GLFWwindow *window) {
 		_update_fps_counter(window);
 
 		glfwGetWindowSize(window, &width, &height);
-		//glViewport (0, 0, width, height);
+		glViewport (0, 0, width, height);
 		// wipe the drawing surface clear
 
 		// mat4 Model = mat4(1.0f); // 単位行列
@@ -204,17 +257,42 @@ void gl_execute(GLFWwindow *window) {
 		// glBindVertexArray(vao2);
 		// glDrawArrays(GL_TRIANGLES, 0, 3);
 
+		Model = mat4(
+			1.0f, 0.0f, 0.0f, 0.0f
+			, 0.0f, 1.0f, 0.0f, 0.0f
+			, 0.0f, 0.0f, 1.0f, 0.0f
+			, 0.0f, 0.0f, 0.0f, 1.0f
+			);
+		MVP = Projection * View * Model; //これをGLSLに渡す
+
 		glUniformMatrix4fv(MatrixID_MVP, 1, GL_FALSE, &MVP[0][0]);
 		glUniformMatrix4fv(MatrixID_M, 1, GL_FALSE, &Model[0][0]);
 		glUniformMatrix4fv(MatrixID_V, 1, GL_FALSE, &View[0][0]);
 
-		vec3 lightPos = vec3(4, 4, 4);
+		lightPos = vec3(4, 4, 4);
 		glUniform3f(Vector3ID_LightPosition, lightPos.x, lightPos.y, lightPos.z);
 
 		//glBindVertexArray(vao_cube);
 		//glDrawArrays(GL_TRIANGLES, 0, 3 * 12);
 
 		imptr.Render();
+
+		//Model = mat4(
+		//	1.0f, 0.0f, 0.0f, 0.0f
+		//	, 0.0f, 1.0f, 0.0f, 0.0f
+		//	, 0.0f, 0.0f, 1.0f, 0.0f
+		//	, 3.0f, 3.0f, 0.0f, 1.0f
+		//	);
+		//MVP = Projection * View * Model; //これをGLSLに渡す
+		//glUniformMatrix4fv(MatrixID_MVP, 1, GL_FALSE, &MVP[0][0]);
+		//glUniformMatrix4fv(MatrixID_M, 1, GL_FALSE, &Model[0][0]);
+		//glUniformMatrix4fv(MatrixID_V, 1, GL_FALSE, &View[0][0]);
+
+		//lightPos = vec3(4, 4, 4);
+		//glUniform3f(Vector3ID_LightPosition, lightPos.x, lightPos.y, lightPos.z);
+
+		//imptr.Render();
+
 
 		glfwPollEvents();
 		// put the stuff we've been drawing onto the display

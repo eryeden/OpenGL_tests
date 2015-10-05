@@ -19,8 +19,8 @@
 #endif
 
 #if (_MSC_VER == 1800)	 //Visual Studio 2013
-#pragma comment(lib, "glfw3-vc120.lib")  // glfw3-vc120.lib
-#pragma comment(lib, "assimp-vc120.lib")  //assimp-vc120.lib
+#pragma comment(lib, "glfw3-vc120.lib")  
+#pragma comment(lib, "assimp-vc120.lib")
 #endif
 
 #ifdef _MSC_VER
@@ -161,6 +161,7 @@ private:
 	GLuint ShaderIDNonTexture;
 	GLuint ShaderIDTexture;
 
+	GLuint VaoID;
 
 	struct MeshEntry {
 		MeshEntry();

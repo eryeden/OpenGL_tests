@@ -154,6 +154,10 @@ MdlImporter::MdlImporter(const GLuint &_ShaderIDNonTexture, const GLuint &_Shade
 	UseTexture = false;
 	ShaderIDNonTexture = _ShaderIDNonTexture;
 	ShaderIDTexture = _ShaderIDTexture;
+
+	//VAO
+	glGenVertexArrays(1, &VaoID);
+	//glBindVertexArray(VaoID);
 }
 
 MdlImporter::~MdlImporter(){
@@ -259,6 +263,8 @@ bool MdlImporter::InitFromScene(const aiScene* pScene, const std::string& Filena
 		//各頂点にカラー情報を付加する
 		const aiMesh* paiMesh = pScene->mMeshes[i];
 		InitMesh(i, paiMesh, _Color);
+
+		printf("Model loaded: %d / %d\n", i+1, m_Entries.size());
 	}
 	
 	return true;
@@ -306,6 +312,7 @@ void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 	}
 
 	//ここでVBOを生成
+	glBindVertexArray(VaoID); //VAOをバインド
 	m_Entries[Index].Init(Vertices, Normals, UVs, Indices);
 	//メッシュエントリクラスに頂点、
 	//頂点インデックスコンテナをわたし、
@@ -329,6 +336,11 @@ void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh, const glm:
 	//カラー用
 	std::vector<glm::vec3> Colors;
 
+	Vertices.resize(paiMesh->mNumVertices);
+	Normals.resize(paiMesh->mNumVertices);
+	Colors.resize(paiMesh->mNumVertices);
+
+
 	const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
 	for (unsigned int i = 0; i < paiMesh->mNumVertices; i++) {
@@ -338,9 +350,15 @@ void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh, const glm:
 		const aiVector3D* pNormal = &(paiMesh->mNormals[i]); //法線
 		
 		//ここで頂点座標、法線、色情報を追加する
-		Vertices.push_back(vec3(pPos->x, pPos->y, pPos->z)); //頂点座標
-		Normals.push_back(vec3(pNormal->x, pNormal->y, pNormal->z)); //法線
-		Colors.push_back(_Color); //色情報
+		//Vertices.push_back(vec3(pPos->x, pPos->y, pPos->z)); //頂点座標
+		//Normals.push_back(vec3(pNormal->x, pNormal->y, pNormal->z)); //法線
+		//Colors.push_back(_Color); //色情報
+
+		Vertices[i] = (vec3(pPos->x, pPos->y, pPos->z)); //頂点座標
+		Normals[i] = (vec3(pNormal->x, pNormal->y, pNormal->z)); //法線
+		Colors[i] = (_Color); //色情報
+
+		//printf("%3.2f%\n", ((double)(i + 1)/((double)paiMesh->mNumVertices) * 100.0));
 	}
 
 	//面を構成する頂点インデックスを頂点コンテナに格納
@@ -425,7 +443,9 @@ bool MdlImporter::InitMaterials(const aiScene* pScene, const std::string& Filena
 void MdlImporter::RenderTexture(){
 
 	//テクスチャ描画するシェーダーを使用
-	glUseProgram(ShaderIDTexture);
+	//glUseProgram(ShaderIDTexture);
+
+	//glBindVertexArray(VaoID);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -489,6 +509,8 @@ void MdlImporter::RenderColor(){
 
 	//単に色つけするだけのシェーダーを使用
 	//glUseProgram(ShaderIDNonTexture);
+
+	glBindVertexArray(VaoID);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
