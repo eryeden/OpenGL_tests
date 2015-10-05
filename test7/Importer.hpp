@@ -60,79 +60,13 @@
 //#include <ogldev_math_3d.h>
 //#include <ogldev_texture.h>
 
-//struct Vertex
-//{
-//
-//	Vector3f m_pos;
-//	Vector2f m_tex;
-//	Vector3f m_normal;
-//
-//	Vertex() {}
-//
-//	Vertex(const Vector3f& pos, const Vector2f& tex, const Vector3f& normal)
-//	{
-//		m_pos = pos;
-//		m_tex = tex;
-//		m_normal = normal;
-//	}
-//};
-//
-//struct MeshEntry {
-//	MeshEntry();
-//
-//	~MeshEntry();
-//
-//	//頂点バッファ、インデックスバッファオブジェクトを生成する
-//	//void Init(const std::vector<Vertex>& Vertices,
-//	//	const std::vector<unsigned int>& Indices);
-//	virtual void Init();
-//
-//	//GLuint VB; //エントリーひとつ分の頂点バッファ
-//	//GLuint IB; //面の頂点インデックスバッファ
-//
-//	GLuint VertexBuffer;
-//	GLuint NormalBuffer;
-//	GLuint ElementBuffer;
-//
-//	GLuint ColorBuffer; //UVバッファのハンドルかColorバッファのハンドルが入る
-//
-//	unsigned int NumIndices;    //面の頂点インデックス数
-//	unsigned int MaterialIndex; //aiScene中のマテリアルインデックス
-//
-//	//モデルを呼んだ頂点座標、UV座標、頂点に対応する色、法線が入る
-//	std::vector<glm::vec3> Vertices;
-//	std::vector<glm::vec3> Normals;
-//	//面を構成するインデックス列が入る
-//	std::vector<unsigned short> Indices;
-//};
-//
-//struct MeshEntryColor : public MeshEntry{
-//	MeshEntryColor();
-//	~MeshEntryColor();
-//
-//	void Init(
-//		const std::vector<glm::vec3> &_Vertices
-//		, const std::vector<glm::vec3> &_Normals
-//		, const std::vector<glm::vec3> &_Colors
-//		, const std::vector<glm::vec3> &_Indices
-//		);
-//
-//	std::vector<glm::vec3> Colors; //頂点に対応する色情報がはいる
-//};
-//struct MeshEntryTexture : public MeshEntry{
-//	MeshEntryTexture();
-//	~MeshEntryTexture();
-//
-//	void Init(
-//		const std::vector<glm::vec3> &_Vertices
-//		, const std::vector<glm::vec3> &_Normals
-//		, const std::vector<glm::vec2> &_UVs
-//		, const std::vector<glm::vec3> &_Indices
-//		);
-//
-//	std::vector<glm::vec2> UVs; //テクスチャUV座標が入る
-//};
 
+/*
+
+#TODO
+テクスチャの描画に対応する
+
+*/
 class MdlImporter{
 public:
 	MdlImporter(const GLuint &_ShaderIDNonTexture, const GLuint &_ShaderIDTexture);
@@ -161,7 +95,7 @@ private:
 	GLuint ShaderIDNonTexture;
 	GLuint ShaderIDTexture;
 
-	GLuint VaoID;
+	//GLuint VaoID;
 
 	struct MeshEntry {
 		MeshEntry();
@@ -197,18 +131,6 @@ private:
 		unsigned int NumIndices;    //面の頂点インデックス数
 		unsigned int MaterialIndex; //aiScene中のマテリアルインデックス
 
-		//モデルを呼んだ頂点座標、UV座標、頂点に対応する色、法線が入る
-		//std::vector<glm::vec3> Vertices;
-		//std::vector<glm::vec3> Normals;
-		//面を構成するインデックス列が入る
-		//std::vector<unsigned short> Indices;
-
-		/*
-			//カラー用
-			std::vector<glm::vec3> Colors;
-			//テクスチャUV座標
-			std::vector<glm::vec2> UVs;
-		*/
 	};
 
 	bool UseTexture;

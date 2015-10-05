@@ -121,52 +121,52 @@ void gl_execute(GLFWwindow *window) {
 		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs.glsl");
 #endif
 
-//#if (_MSC_VER == 1900)	 //Visual Studio 2015
-//	GLuint shader_nontex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
-//		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl");
-//	GLuint shader_usetex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs.glsl"
-//		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs.glsl");
-//#endif
-//
-//#if (_MSC_VER == 1800)	 //Visual Studio 2013
-//	GLuint shader_nontex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
-//		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl");
-//	GLuint shader_usetex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs.glsl"
-//		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs.glsl");
-//#endif
+	//#if (_MSC_VER == 1900)	 //Visual Studio 2015
+	//	GLuint shader_nontex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
+	//		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl");
+	//	GLuint shader_usetex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs.glsl"
+	//		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs.glsl");
+	//#endif
+	//
+	//#if (_MSC_VER == 1800)	 //Visual Studio 2013
+	//	GLuint shader_nontex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
+	//		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl");
+	//	GLuint shader_usetex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs.glsl"
+	//		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs.glsl");
+	//#endif
 
 
 
-	//座標変換について
-	/*
-	  CPU側では変換行列を用意する
-	  すべての変換を示す行列を用意出来たらこれをGPU側に転送する
-	  シェーダはこの変換行列を頂点に掛け算して変換後座標を得る
-	  つまり各座標に対しての変換はGPU側；シェーダ側で処理される
-	  これらは並列に実行されるため高速な変換が可能になる
-	 */
-	 /*
-	   モデル空間からワールド空間への変換を定める[Model Coordinates -> World Coordinates]
-	   ワールド空間からカメラ空間への変換を定める[World Coordinates -> Camera Coordinates]
-	   カメラ空間から同次空間への変換を定める[Camera Coordinates -> Homogeneous Coordinates]
-	  */
+		//座標変換について
+		/*
+		  CPU側では変換行列を用意する
+		  すべての変換を示す行列を用意出来たらこれをGPU側に転送する
+		  シェーダはこの変換行列を頂点に掛け算して変換後座標を得る
+		  つまり各座標に対しての変換はGPU側；シェーダ側で処理される
+		  これらは並列に実行されるため高速な変換が可能になる
+		 */
+		 /*
+		   モデル空間からワールド空間への変換を定める[Model Coordinates -> World Coordinates]
+		   ワールド空間からカメラ空間への変換を定める[World Coordinates -> Camera Coordinates]
+		   カメラ空間から同次空間への変換を定める[Camera Coordinates -> Homogeneous Coordinates]
+		  */
 
-	  /*
-		#1: MVP(Model View Projection)行列を定める Projection * View * Model
-		#2: GLSL(Shader side)に渡す
-		#3: シェーダ側でMVPを用いて頂点の変換を行う
+		  /*
+			#1: MVP(Model View Projection)行列を定める Projection * View * Model
+			#2: GLSL(Shader side)に渡す
+			#3: シェーダ側でMVPを用いて頂点の変換を行う
 
-	   */
+		   */
 
 	mat4 Model = mat4(1.0f); // 単位行列
 	Model = mat4(
-		  1.0f, 0.0f, 0.0f, 0.0f
+		1.0f, 0.0f, 0.0f, 0.0f
 		, 0.0f, 1.0f, 0.0f, 0.0f
 		, 0.0f, 0.0f, 1.0f, 0.0f
 		, 0.0f, 0.0f, 0.0f, 1.0f
-	);
+		);
 	mat4 View = lookAt(
-		vec3(5, 5, 5),
+		vec3(9, 9, 15),
 		vec3(0, 0, 0),
 		vec3(0, 1, 0)
 		);
@@ -184,17 +184,23 @@ void gl_execute(GLFWwindow *window) {
 	GLuint MatrixID_V = glGetUniformLocation(shader_nontex_id, "V");
 	GLuint MatrixID_M = glGetUniformLocation(shader_nontex_id, "M");
 	GLuint Vector3ID_LightPosition = glGetUniformLocation(shader_nontex_id, "LightPosition_worldspace");
-	vec3 lightPos = vec3(30, 30, 30);
+	vec3 lightPos = vec3(0, 40, 0);
 
 	MdlImporter imptr(shader_nontex_id, shader_usetex_id);
+	MdlImporter imptr1(shader_nontex_id, shader_usetex_id);
+
+	/*
+		黄色：山吹？ vec3(1, 0.85, 0)
+			  FANUC? vec3(0.964, 0.714, 0)
+	*/
 
 #ifdef KIKUTI_HOME
 	imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4)); //#cc00000
 	 //imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/cube1.obj", vec3(1, 1, 1)); //#cc00000
 #else
-	imptr.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/stoadmm.stl", vec3(1, 0.85, 0)); //#cc00000
+	imptr.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/stoadmm.stl", vec3(0.964, 0.714, 0)); //#cc00000
+	imptr1.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/Asm.stl", vec3(0, 0.71, 0.101));
 	//imptr.Load("C:\Users\B4\Source\Repos\OpenGL_tests\models/cube1.obj", vec3(1, 1, 1)); //#cc00000
-
 	//imptr.Load("C:/Users/B4/OneDrive/Documents/Models/PersonalComputer.stl", vec3(0, 0.8, 0.8)); //#cc00000
 
 #endif
@@ -211,6 +217,13 @@ void gl_execute(GLFWwindow *window) {
 //#endif
 
 
+	/*
+	軸変換
+	X -> X
+	Y -> Z
+	Z -> -Y
+	*/
+
 
 	int width, height;
 
@@ -222,7 +235,7 @@ void gl_execute(GLFWwindow *window) {
 		_update_fps_counter(window);
 
 		glfwGetWindowSize(window, &width, &height);
-		glViewport (0, 0, width, height);
+		glViewport(0, 0, width, height);
 		// wipe the drawing surface clear
 
 		// mat4 Model = mat4(1.0f); // 単位行列
@@ -232,7 +245,7 @@ void gl_execute(GLFWwindow *window) {
 		//    vec3(0, 1, 0)
 		//    );
 		// //どこからどこを見るか　ワールド座標において
-		// mat4 Projection = perspective(30.0f, (float)width / (float)height, 0.1f, 100.0f); //glPerspective
+		Projection = perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f); //glPerspective
 
 		// mat4 MVP = Projection * View * Model; //これをGLSLに渡す
 
@@ -269,29 +282,28 @@ void gl_execute(GLFWwindow *window) {
 		glUniformMatrix4fv(MatrixID_M, 1, GL_FALSE, &Model[0][0]);
 		glUniformMatrix4fv(MatrixID_V, 1, GL_FALSE, &View[0][0]);
 
+
 		lightPos = vec3(4, 4, 4);
 		glUniform3f(Vector3ID_LightPosition, lightPos.x, lightPos.y, lightPos.z);
 
-		//glBindVertexArray(vao_cube);
-		//glDrawArrays(GL_TRIANGLES, 0, 3 * 12);
-
 		imptr.Render();
 
-		//Model = mat4(
-		//	1.0f, 0.0f, 0.0f, 0.0f
-		//	, 0.0f, 1.0f, 0.0f, 0.0f
-		//	, 0.0f, 0.0f, 1.0f, 0.0f
-		//	, 3.0f, 3.0f, 0.0f, 1.0f
-		//	);
-		//MVP = Projection * View * Model; //これをGLSLに渡す
-		//glUniformMatrix4fv(MatrixID_MVP, 1, GL_FALSE, &MVP[0][0]);
-		//glUniformMatrix4fv(MatrixID_M, 1, GL_FALSE, &Model[0][0]);
-		//glUniformMatrix4fv(MatrixID_V, 1, GL_FALSE, &View[0][0]);
 
-		//lightPos = vec3(4, 4, 4);
-		//glUniform3f(Vector3ID_LightPosition, lightPos.x, lightPos.y, lightPos.z);
+		Model = mat4(
+			1.0f, 0.0f, 0.0f, 0.0f
+			, 0.0f, 1.0f, 0.0f, 0.0f
+			, 0.0f, 0.0f, 1.0f, 0.0f
+			, 0.0f, 0.0f, 0.0f, 1.0f
+			);
+		MVP = Projection * View * Model; //これをGLSLに渡す
+		glUniformMatrix4fv(MatrixID_MVP, 1, GL_FALSE, &MVP[0][0]);
+		glUniformMatrix4fv(MatrixID_M, 1, GL_FALSE, &Model[0][0]);
+		glUniformMatrix4fv(MatrixID_V, 1, GL_FALSE, &View[0][0]);
 
-		//imptr.Render();
+		lightPos = vec3(5, 5, 5);
+		glUniform3f(Vector3ID_LightPosition, lightPos.x, lightPos.y, lightPos.z);
+
+		imptr1.Render();
 
 
 		glfwPollEvents();

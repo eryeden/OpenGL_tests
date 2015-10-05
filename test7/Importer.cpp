@@ -156,7 +156,7 @@ MdlImporter::MdlImporter(const GLuint &_ShaderIDNonTexture, const GLuint &_Shade
 	ShaderIDTexture = _ShaderIDTexture;
 
 	//VAO
-	glGenVertexArrays(1, &VaoID);
+	//glGenVertexArrays(1, &VaoID);
 	//glBindVertexArray(VaoID);
 }
 
@@ -312,7 +312,7 @@ void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 	}
 
 	//ここでVBOを生成
-	glBindVertexArray(VaoID); //VAOをバインド
+	//glBindVertexArray(VaoID); //VAOをバインド
 	m_Entries[Index].Init(Vertices, Normals, UVs, Indices);
 	//メッシュエントリクラスに頂点、
 	//頂点インデックスコンテナをわたし、
@@ -354,8 +354,21 @@ void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh, const glm:
 		//Normals.push_back(vec3(pNormal->x, pNormal->y, pNormal->z)); //法線
 		//Colors.push_back(_Color); //色情報
 
-		Vertices[i] = (vec3(pPos->x, pPos->y, pPos->z)); //頂点座標
-		Normals[i] = (vec3(pNormal->x, pNormal->y, pNormal->z)); //法線
+		//座標軸変更なし
+		//Vertices[i] = (vec3(pPos->x, pPos->y, pPos->z)); //頂点座標
+		//Normals[i] = (vec3(pNormal->x, pNormal->y, pNormal->z)); //法線
+		//Colors[i] = (_Color); //色情報
+
+		/*
+		軸変換
+		X -> X
+		Y -> Z
+		Z -> -Y
+		*/
+
+		//座標軸変更あり
+		Vertices[i] = (vec3(pPos->x, pPos->z, -pPos->y)); //頂点座標
+		Normals[i] = (vec3(pNormal->x, pNormal->z, -pNormal->y)); //法線
 		Colors[i] = (_Color); //色情報
 
 		//printf("%3.2f%\n", ((double)(i + 1)/((double)paiMesh->mNumVertices) * 100.0));
@@ -510,7 +523,7 @@ void MdlImporter::RenderColor(){
 	//単に色つけするだけのシェーダーを使用
 	//glUseProgram(ShaderIDNonTexture);
 
-	glBindVertexArray(VaoID);
+	//glBindVertexArray(VaoID);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
