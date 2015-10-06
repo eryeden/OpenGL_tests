@@ -34,7 +34,7 @@
 using namespace glm;
 
 //#include "gli/gli.hpp"
-#include "texture.hpp"
+//#include "texture.hpp"
 
 //Model Loader Library
 #include <assimp/cimport.h>
@@ -44,7 +44,7 @@ using namespace glm;
 #include "Importer.hpp"
 
 //家の場合
-//#define KIKUTI_HOME
+#define KIKUTI_HOME
 
 void gl_execute(GLFWwindow *window);
 void _update_fps_counter(GLFWwindow * window);
@@ -196,6 +196,7 @@ void gl_execute(GLFWwindow *window) {
 
 #ifdef KIKUTI_HOME
 	imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4)); //#cc00000
+	imptr1.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/Asm.stl", vec3(0, 0.71, 0.101));
 	 //imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/cube1.obj", vec3(1, 1, 1)); //#cc00000
 #else
 	imptr.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/stoadmm.stl", vec3(0.964, 0.714, 0)); //#cc00000

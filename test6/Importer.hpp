@@ -56,26 +56,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <ogldev_util.h>
-#include <ogldev_math_3d.h>
-#include <ogldev_texture.h>
+//#include <ogldev_util.h>
+//#include <ogldev_math_3d.h>
+//#include <ogldev_texture.h>
 
-struct Vertex
-{
-
-	Vector3f m_pos;
-	Vector2f m_tex;
-	Vector3f m_normal;
-
-	Vertex() {}
-
-	Vertex(const Vector3f& pos, const Vector2f& tex, const Vector3f& normal)
-	{
-		m_pos = pos;
-		m_tex = tex;
-		m_normal = normal;
-	}
-};
 //
 //struct MeshEntry {
 //	MeshEntry();
@@ -213,7 +197,6 @@ private:
 	bool UseTexture;
 
 	std::vector<MeshEntry> m_Entries;
-	std::vector<Texture*> m_Textures;
 
 };
 

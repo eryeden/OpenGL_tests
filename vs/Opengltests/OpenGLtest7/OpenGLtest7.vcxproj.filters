@@ -50,5 +50,9 @@
     <None Include="..\..\..\test7\StandardShading_fs_non_tex.glsl" />
     <None Include="..\..\..\test7\StandardShading_vs.glsl" />
     <None Include="..\..\..\test7\StandardShading_vs_non_tex.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_fs.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_fs_non_tex.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_vs.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_vs_non_tex.glsl" />
   </ItemGroup>
 </Project>

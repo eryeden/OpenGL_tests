@@ -141,6 +141,10 @@
     <ClInclude Include="..\..\..\test7\texture.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\GLSL\fxaa_fs.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_fs_non_tex.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_vs.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_vs_non_tex.glsl" />
     <None Include="..\..\..\test7\StandardShading_fs.glsl" />
     <None Include="..\..\..\test7\StandardShading_fs_non_tex.glsl" />
     <None Include="..\..\..\test7\StandardShading_vs.glsl" />
