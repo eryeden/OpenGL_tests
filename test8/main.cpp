@@ -42,6 +42,7 @@ using namespace glm;
 #include <assimp/postprocess.h>
 
 #include "Importer.hpp"
+#include "controls.hpp"
 
 //家の場合
 //#define KIKUTI_HOME
@@ -107,6 +108,11 @@ void gl_execute(GLFWwindow *window) {
 		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/pp_fs.glsl"
 		);
 
+	GLuint shader_fxaa_id = LoadShaders(
+		"C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/fxaa_vs.glsl"
+		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/fxaa_fs.glsl"
+		);
+
 #else
 	GLuint shader_nontex_id = LoadShaders("C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
 		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl");
@@ -117,6 +123,10 @@ void gl_execute(GLFWwindow *window) {
 	GLuint shader_postprocess_id = LoadShaders(
 		"C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/pp_vs.glsl"
 		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/pp_fs.glsl"
+		);
+	GLuint shader_fxaa_id = LoadShaders(
+		"C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/fxaa_vs.glsl"
+		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/fxaa_fs.glsl"
 		);
 #endif
 
@@ -255,6 +265,15 @@ void gl_execute(GLFWwindow *window) {
 	//GLuint quad_programID = LoadShaders("pp_vs.glsl", "pp_fs.glsl");
 	GLuint texID = glGetUniformLocation(shader_postprocess_id, "renderedTexture");
 
+	GLuint texID_fxaa = glGetUniformLocation(shader_fxaa_id, "renderedTexture");
+	GLuint uniform_w = glGetUniformLocation(shader_fxaa_id, "rt_w");
+	GLuint uniform_h = glGetUniformLocation(shader_fxaa_id, "rt_h");
+
+
+
+
+
+
 
 	//#######################INITIALIZE POSTPROCESS##############################
 
@@ -298,7 +317,12 @@ void gl_execute(GLFWwindow *window) {
 			, 0.0f, 0.0f, 1.0f, 0.0f
 			, 0.0f, 0.0f, 0.0f, 1.0f
 			);
-		MVP = Projection * View * Model; //これをGLSLに渡す
+		//MVP = Projection * View * Model; //これをGLSLに渡す
+
+		computeMatricesFromInputs(window);
+		Projection = getProjectionMatrix();
+		View = getViewMatrix();
+		MVP = Projection * View * Model;
 
 		glUniformMatrix4fv(MatrixID_MVP, 1, GL_FALSE, &MVP[0][0]);
 		glUniformMatrix4fv(MatrixID_M, 1, GL_FALSE, &Model[0][0]);
@@ -338,10 +362,16 @@ void gl_execute(GLFWwindow *window) {
 		
 		//ポストプロセスに使用するシェーダーを起動
 		glUseProgram(shader_postprocess_id);
+		//glUseProgram(shader_fxaa_id);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, renderedTexture);
+		
 		glUniform1i(texID, 0);
+
+		//glUniform1i(texID_fxaa, 0);
+		//glUniform1f(uniform_w, (float)width);
+		//glUniform1f(uniform_h, (float)height);
 
 		//頂点バッファ
 		glEnableVertexAttribArray(0);

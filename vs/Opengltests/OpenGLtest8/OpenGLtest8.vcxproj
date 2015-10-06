@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\test8\controls.cpp" />
     <ClCompile Include="..\..\..\test8\Importer.cpp" />
     <ClCompile Include="..\..\..\test8\main.cpp" />
     <ClCompile Include="..\..\..\test8\Object.cpp" />
@@ -131,6 +132,7 @@
     <ClCompile Include="..\..\..\test8\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\test8\controls.hpp" />
     <ClInclude Include="..\..\..\test8\Importer.hpp" />
     <ClInclude Include="..\..\..\test8\Object.hpp" />
     <ClInclude Include="..\..\..\test8\PostProcessing.hpp" />
