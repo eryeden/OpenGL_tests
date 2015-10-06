@@ -138,10 +138,14 @@
     <ClInclude Include="..\..\..\test8\texture.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\test8\StandardShading_fs.glsl" />
-    <None Include="..\..\..\test8\StandardShading_fs_non_tex.glsl" />
-    <None Include="..\..\..\test8\StandardShading_vs.glsl" />
-    <None Include="..\..\..\test8\StandardShading_vs_non_tex.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_fs.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_vs.glsl" />
+    <None Include="..\..\..\GLSL\pp_fs.glsl" />
+    <None Include="..\..\..\GLSL\pp_vs.glsl" />
+    <None Include="..\..\..\GLSL\StandardShading_fs.glsl" />
+    <None Include="..\..\..\GLSL\StandardShading_fs_non_tex.glsl" />
+    <None Include="..\..\..\GLSL\StandardShading_vs.glsl" />
+    <None Include="..\..\..\GLSL\StandardShading_vs_non_tex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
