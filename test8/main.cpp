@@ -44,7 +44,7 @@ using namespace glm;
 #include "Importer.hpp"
 
 //家の場合
-#define KIKUTI_HOME
+//#define KIKUTI_HOME
 
 void gl_execute(GLFWwindow *window);
 void _update_fps_counter(GLFWwindow * window);

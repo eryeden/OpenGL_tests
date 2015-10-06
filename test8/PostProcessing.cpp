@@ -116,6 +116,7 @@ int PostProcessing::execute() {
 
 #endif //USE_POSTPROCESSING
 
+	return 0;
 }
 
 
