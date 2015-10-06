@@ -45,7 +45,7 @@ using namespace glm;
 #include "controls.hpp"
 
 //家の場合
-//#define KIKUTI_HOME
+#define KIKUTI_HOME
 
 void gl_execute(GLFWwindow *window);
 void _update_fps_counter(GLFWwindow * window);
@@ -103,7 +103,7 @@ void gl_execute(GLFWwindow *window) {
 	GLuint shader_usetex_id = LoadShaders("C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs.glsl"
 		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs.glsl");
 
-	GLuint shader_postprocess = LoadShaders(
+	GLuint shader_postprocess_id = LoadShaders(
 		"C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/pp_vs.glsl"
 		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/pp_fs.glsl"
 		);
@@ -111,6 +111,11 @@ void gl_execute(GLFWwindow *window) {
 	GLuint shader_fxaa_id = LoadShaders(
 		"C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/fxaa_vs.glsl"
 		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/fxaa_fs.glsl"
+		);
+
+	GLuint shader_fxaa2_id = LoadShaders(
+		"C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/fxaa_vs2.glsl"
+		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/fxaa_fs2.glsl"
 		);
 
 #else
@@ -127,6 +132,11 @@ void gl_execute(GLFWwindow *window) {
 	GLuint shader_fxaa_id = LoadShaders(
 		"C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/fxaa_vs.glsl"
 		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/fxaa_fs.glsl"
+		);
+
+	GLuint shader_fxaa2_id = LoadShaders(
+		"C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/fxaa_vs2.glsl"
+		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/fxaa_fs2.glsl"
 		);
 #endif
 
@@ -171,7 +181,8 @@ void gl_execute(GLFWwindow *window) {
 	*/
 #ifdef KIKUTI_HOME
 	imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4)); //#cc00000
-	imptr1.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/Asm.stl", vec3(0, 0.71, 0.101));
+	imptr1.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/Asm.stl", vec3(0.964, 0.714, 0));
+	//imptr1.Load("C:/Users/ery/OneDrive/Documents/Models/Suspension.stl", vec3(0.964, 0.714, 0));
 	//imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/cube1.obj", vec3(1, 1, 1)); //#cc00000
 #else
 	imptr.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/stoadmm.stl", vec3(0.964, 0.714, 0)); //#cc00000
@@ -243,10 +254,10 @@ void gl_execute(GLFWwindow *window) {
 								   // Always check that our framebuffer is ok
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		printf("FB failed\n");
-		//return false;
+	//return false;
 
 
-	// The fullscreen quad's FBO
+// The fullscreen quad's FBO
 	static const GLfloat g_quad_vertex_buffer_data[] = {
 		-1.0f, -1.0f, 0.0f,
 		1.0f, -1.0f, 0.0f,
@@ -269,8 +280,11 @@ void gl_execute(GLFWwindow *window) {
 	GLuint uniform_w = glGetUniformLocation(shader_fxaa_id, "rt_w");
 	GLuint uniform_h = glGetUniformLocation(shader_fxaa_id, "rt_h");
 
-
-
+	GLuint texID_fxaa2 = glGetUniformLocation(shader_fxaa2_id, "renderedTexture");
+	//GLuint winsizeID_fxaa2 = glGetUniformLocation(shader_fxaa2_id, "win_size");
+	//vec2 winsize = vec2(width, height);
+	GLuint uniform2_w = glGetUniformLocation(shader_fxaa2_id, "rt_w");
+	GLuint uniform2_h = glGetUniformLocation(shader_fxaa2_id, "rt_h");
 
 
 
@@ -285,7 +299,7 @@ void gl_execute(GLFWwindow *window) {
 		_update_fps_counter(window);
 
 		glfwGetWindowSize(window, &width, &height);
-
+		//winsize = vec2(width, height);
 
 		//############################ON RESHAPE POSTPROCESS################################
 		//スクリーンサイズ変更時にテクスチャサイズ、深度バッファ（レンダバッファ）サイズの変更が必要
@@ -320,7 +334,7 @@ void gl_execute(GLFWwindow *window) {
 		//MVP = Projection * View * Model; //これをGLSLに渡す
 
 		computeMatricesFromInputs(window);
-		Projection = getProjectionMatrix();
+		//Projection = getProjectionMatrix();
 		View = getViewMatrix();
 		MVP = Projection * View * Model;
 
@@ -359,19 +373,24 @@ void gl_execute(GLFWwindow *window) {
 		//ここからポストプロセシング
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		//ポストプロセスに使用するシェーダーを起動
-		glUseProgram(shader_postprocess_id);
+		//glUseProgram(shader_postprocess_id);
 		//glUseProgram(shader_fxaa_id);
+		glUseProgram(shader_fxaa2_id);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, renderedTexture);
-		
-		glUniform1i(texID, 0);
+
+		//glUniform1i(texID, 0);
 
 		//glUniform1i(texID_fxaa, 0);
 		//glUniform1f(uniform_w, (float)width);
 		//glUniform1f(uniform_h, (float)height);
+
+		glUniform1i(texID_fxaa2, 0);
+		glUniform1f(uniform2_w, (float)width);
+		glUniform1f(uniform2_h, (float)height);
 
 		//頂点バッファ
 		glEnableVertexAttribArray(0);
@@ -384,11 +403,11 @@ void gl_execute(GLFWwindow *window) {
 			, 0
 			, (void *)0
 			);
-		 //描画
+		//描画
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glDisableVertexAttribArray(0);
 
-		
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 

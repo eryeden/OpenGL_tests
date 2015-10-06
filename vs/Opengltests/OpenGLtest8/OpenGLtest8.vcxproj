@@ -141,7 +141,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\GLSL\fxaa_fs.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_fs2.glsl" />
     <None Include="..\..\..\GLSL\fxaa_vs.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_vs2.glsl" />
     <None Include="..\..\..\GLSL\pp_fs.glsl" />
     <None Include="..\..\..\GLSL\pp_vs.glsl" />
     <None Include="..\..\..\GLSL\StandardShading_fs.glsl" />

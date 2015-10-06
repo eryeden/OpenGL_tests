@@ -1,4 +1,4 @@
-#version 330 core
+#version 400 core
 
 //uniform sampler2D tex0; //Texture sampler
 uniform sampler2D renderedTexture;
@@ -6,16 +6,36 @@ uniform float vx_offset = 1.0;
 uniform float rt_w;//フレーム幅
 uniform float rt_h;//フレーム高さ
 uniform float FXAA_SPAN_MAX = 8.0;
-uniform float FXAA_REDUCE_MUL = 1.0/8.0;
+uniform float FXAA_REDUCE_MUL = 0.0;//1.0/8.0;
 
 in vec2 UV;
-in vec4 posPos;
+//in vec4 posPos;
 out vec3 color;
 
 #define FxaaInt2 ivec2
 #define FxaaFloat2 vec2
-#define FxaaTexLod0(t, p) texture2DLod(t, p, 0.0)
+#define FxaaTexLod0(t, p) textureLod(t, p, 0.0)
 #define FxaaTexOff(t, p, o, r) textureLodOffset(t, p, 0.0, o)
+
+
+///*
+//	texture2DLod(t, p, 0.0)について
+//	t : sampler2D
+//	p : サンプルされるテクスチャの座標
+//	MEMO: Coordinate:座標
+
+//	偏微分
+//	textureLod performs a texture lookup at coordinate P from the texture bound 
+//	to sampler with an explicit level-of-detail as specified in lod. 
+//	lod specifies λbase and sets the partial derivatives as follows:
+
+//	「LOD」とは「Level　of　Detail」の略でして、直訳すると「細かさの度合い」という感じでしょうか。
+
+
+
+//*/
+
+
 
 vec3 FxaaPixelShader( 
   vec4 posPos, // Output of FxaaVertexShader interpolated across screen.
@@ -86,7 +106,7 @@ vec4 PostFX(sampler2D tex, vec2 uv, float time)
 
 
 void main(){
-    color =  PostFX(renderedTexture, UV, 0.0).rgb;
+    color =  PostFX(renderedTexture, gl_FragCoord.st, 0.0).rgb;
 }
 
 

@@ -28,24 +28,15 @@
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec3 vertexPosition_modelspace;
 
+uniform float rt_w;//フレーム幅
+uniform float rt_h;//フレーム高さ
+
 // Output data ; will be interpolated for each fragment.
-out vec2 UV;
-//out vec4 posPos;
-
-
-uniform float rt_w; //スクリーン幅
-uniform float rt_h;//スクリーン高さ
-uniform float FXAA_SUBPIX_SHIFT = 0.0;//1.0/4.0;
-
+out vec2 win_size;
 
 void main(){
 	gl_Position =  vec4(vertexPosition_modelspace,1);
-	//UV = (vertexPosition_modelspace.xy+vec2(1,1))/2.0;
-
-	vec2 rcpFrame = vec2(1.0/rt_w, 1.0/rt_h);
-
-//	posPos.xy = gl_MultiTexCoord0; //UV座標であろう
-//    posPos.zw = gl_MultiTexCoord0 - (rcpFrame * (0.5 + FXAA_SUBPIX_SHIFT));
+	win_size = vec2(rt_w, rt_h);
 }
 
 
