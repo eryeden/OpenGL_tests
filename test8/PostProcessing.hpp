@@ -45,32 +45,38 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-class PostProcessing {
+class PostProcessingFXAA {
 public:
 
-	PostProcessing(const GLuint & _shader_fxaa_id, const GLuint & _shader_passthrough_id);
-	PostProcessing(const std::string & _path_to_vertexshader_fxaa
+	PostProcessingFXAA(const GLuint & _shader_fxaa_id, const GLuint & _shader_passthrough_id);
+	PostProcessingFXAA(
+		const std::string & _path_to_vertexshader_fxaa
 		, const std::string & _path_to_fragmentshader_fxaa
 		, const std::string & _path_to_vertexshader_passthrough
-		, const std::string & _path_to_fragmentshader_passthrough);
+		, const std::string & _path_to_fragmentshader_passthrough
+		);
 
-	~PostProcessing();
+	~PostProcessingFXAA();
 
 	void Reshape(
 		GLsizei width
 		, GLsizei height);
+
+	void Reshape(const GLFWwindow * window);
 
 	void Bind();
 	void DeBind();
 
 	void Render();
 
-	int execute();
+	void EnableFXAA();
+	void DisableFXAA();
+	void ToggleFXAA();
+
 private:
 
 	GLsizei width;
 	GLsizei height;
-
 
 	GLuint shader_fxaa;
 	GLuint shader_passthrough;
@@ -80,30 +86,20 @@ private:
 	GLuint render_depthbuffer_id;
 	GLuint quad_vertexbuffer_id;
 
-	//GLenum drawbuffers[1];
-	//static const GLfloat g_quad_vertex_buffer_data[];
-	///*= {
-	//	-1.0f, -1.0f, 0.0f,
-	//	1.0f, -1.0f, 0.0f,
-	//	-1.0f,  1.0f, 0.0f,
-	//	-1.0f,  1.0f, 0.0f,
-	//	1.0f, -1.0f, 0.0f,
-	//	1.0f,  1.0f, 0.0f,
-	//};*/
-
 	GLuint vertexbuffer_id;
 
 	GLuint handler_texture_passthrough;
 	GLuint handler_texture_faxx;
 
-	GLuint hundler_width_screen;
-	GLuint hundler_height_screen;
+	GLuint handler_width_screen;
+	GLuint handler_height_screen;
 
+	bool is_use_fxaa;
 
 	void Initialize();
 
-
-
+	void RenderPassthrough();
+	void RenderFXAA();
 };
 
 

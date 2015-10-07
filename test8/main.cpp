@@ -43,9 +43,10 @@ using namespace glm;
 
 #include "Importer.hpp"
 #include "controls.hpp"
+#include "PostProcessing.hpp"
 
 //家の場合
-#define KIKUTI_HOME
+//#define KIKUTI_HOME
 
 void gl_execute(GLFWwindow *window);
 void _update_fps_counter(GLFWwindow * window);
@@ -63,7 +64,11 @@ int main() {
 		return 1;
 	}
 
-	GLFWwindow * window = glfwCreateWindow(640, 480, "Hello Triangle",
+	int w, h;
+	w = 800;
+	h = 600;
+
+	GLFWwindow * window = glfwCreateWindow(w, h, "Hello Triangle",
 		NULL, NULL);
 	if (!window) {
 		fprintf(stderr, "ERROR: could not open window with GLFW3\n");
@@ -141,9 +146,9 @@ void gl_execute(GLFWwindow *window) {
 #endif
 
 
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
+	//GLuint VertexArrayID;
+	//glGenVertexArrays(1, &VertexArrayID);
+	//glBindVertexArray(VertexArrayID);
 
 
 
@@ -194,104 +199,104 @@ void gl_execute(GLFWwindow *window) {
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 
-	//#######################INITIALIZE POSTPROCESS##############################
-	/*
-		テクスチャ、レンダバッファ、FBOの初期化を行う
-	*/
-	// ---------------------------------------------
-	// Render to Texture - specific code begins here
-	// ---------------------------------------------
-
-	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
-	GLuint FramebufferName = 0;
-	glGenFramebuffers(1, &FramebufferName);
-	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-
-	// The texture we're going to render to
-	GLuint renderedTexture;
-	glGenTextures(1, &renderedTexture);
-
-	// "Bind" the newly created texture : all future texture functions will modify this texture
-	glBindTexture(GL_TEXTURE_2D, renderedTexture);
-
-	// Give an empty image to OpenGL ( the last "0" means "empty" )
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-
-	// Poor filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	// The depth buffer
-	GLuint depthrenderbuffer;
-	glGenRenderbuffers(1, &depthrenderbuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
-
-	//// Alternative : Depth texture. Slower, but you can sample it later in your shader
-	//GLuint depthTexture;
-	//glGenTextures(1, &depthTexture);
-	//glBindTexture(GL_TEXTURE_2D, depthTexture);
-	//glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT24, 1024, 768, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	// Set "renderedTexture" as our colour attachement #0
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
-
-	//// Depth texture alternative : 
-	//glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTexture, 0);
-
-
-	// Set the list of draw buffers.
-	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
-
-								   // Always check that our framebuffer is ok
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		printf("FB failed\n");
-	//return false;
-
-
-// The fullscreen quad's FBO
-	static const GLfloat g_quad_vertex_buffer_data[] = {
-		-1.0f, -1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		1.0f,  1.0f, 0.0f,
-	};
-
-	GLuint quad_vertexbuffer;
-	glGenBuffers(1, &quad_vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
-
-	// Create and compile our GLSL program from the shaders
-	//GLuint quad_programID = LoadShaders("pp_vs.glsl", "pp_fs.glsl");
-	GLuint texID = glGetUniformLocation(shader_postprocess_id, "renderedTexture");
-
-	GLuint texID_fxaa = glGetUniformLocation(shader_fxaa_id, "renderedTexture");
-	GLuint uniform_w = glGetUniformLocation(shader_fxaa_id, "rt_w");
-	GLuint uniform_h = glGetUniformLocation(shader_fxaa_id, "rt_h");
-
-	GLuint texID_fxaa2 = glGetUniformLocation(shader_fxaa2_id, "renderedTexture");
-	//GLuint winsizeID_fxaa2 = glGetUniformLocation(shader_fxaa2_id, "win_size");
-	//vec2 winsize = vec2(width, height);
-	GLuint uniform2_w = glGetUniformLocation(shader_fxaa2_id, "rt_w");
-	GLuint uniform2_h = glGetUniformLocation(shader_fxaa2_id, "rt_h");
-
-
-
-
-	//#######################INITIALIZE POSTPROCESS##############################
-
-
+//	//#######################INITIALIZE POSTPROCESS##############################
+//	/*
+//		テクスチャ、レンダバッファ、FBOの初期化を行う
+//	*/
+//	// ---------------------------------------------
+//	// Render to Texture - specific code begins here
+//	// ---------------------------------------------
+//
+//	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+//	GLuint FramebufferName = 0;
+//	glGenFramebuffers(1, &FramebufferName);
+//	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+//
+//	// The texture we're going to render to
+//	GLuint renderedTexture;
+//	glGenTextures(1, &renderedTexture);
+//
+//	// "Bind" the newly created texture : all future texture functions will modify this texture
+//	glBindTexture(GL_TEXTURE_2D, renderedTexture);
+//
+//	// Give an empty image to OpenGL ( the last "0" means "empty" )
+//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+//
+//	// Poor filtering
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//
+//	// The depth buffer
+//	GLuint depthrenderbuffer;
+//	glGenRenderbuffers(1, &depthrenderbuffer);
+//	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
+//	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+//	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+//
+//	//// Alternative : Depth texture. Slower, but you can sample it later in your shader
+//	//GLuint depthTexture;
+//	//glGenTextures(1, &depthTexture);
+//	//glBindTexture(GL_TEXTURE_2D, depthTexture);
+//	//glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT24, 1024, 768, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+//	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
+//	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//
+//	// Set "renderedTexture" as our colour attachement #0
+//	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
+//
+//	//// Depth texture alternative : 
+//	//glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTexture, 0);
+//
+//
+//	// Set the list of draw buffers.
+//	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+//	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+//
+//								   // Always check that our framebuffer is ok
+//	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+//		printf("FB failed\n");
+//	//return false;
+//
+//
+//// The fullscreen quad's FBO
+//	static const GLfloat g_quad_vertex_buffer_data[] = {
+//		-1.0f, -1.0f, 0.0f,
+//		1.0f, -1.0f, 0.0f,
+//		-1.0f,  1.0f, 0.0f,
+//		-1.0f,  1.0f, 0.0f,
+//		1.0f, -1.0f, 0.0f,
+//		1.0f,  1.0f, 0.0f,
+//	};
+//
+//	GLuint quad_vertexbuffer;
+//	glGenBuffers(1, &quad_vertexbuffer);
+//	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+//	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
+//
+//	// Create and compile our GLSL program from the shaders
+//	//GLuint quad_programID = LoadShaders("pp_vs.glsl", "pp_fs.glsl");
+//	GLuint texID = glGetUniformLocation(shader_postprocess_id, "renderedTexture");
+//
+//	GLuint texID_fxaa = glGetUniformLocation(shader_fxaa_id, "renderedTexture");
+//	GLuint uniform_w = glGetUniformLocation(shader_fxaa_id, "rt_w");
+//	GLuint uniform_h = glGetUniformLocation(shader_fxaa_id, "rt_h");
+//
+//	GLuint texID_fxaa2 = glGetUniformLocation(shader_fxaa2_id, "renderedTexture");
+//	//GLuint winsizeID_fxaa2 = glGetUniformLocation(shader_fxaa2_id, "win_size");
+//	//vec2 winsize = vec2(width, height);
+//	GLuint uniform2_w = glGetUniformLocation(shader_fxaa2_id, "rt_w");
+//	GLuint uniform2_h = glGetUniformLocation(shader_fxaa2_id, "rt_h");
+//
+//
+//
+//
+//	//#######################INITIALIZE POSTPROCESS##############################
+	PostProcessingFXAA pp_fxaa(shader_fxaa2_id, shader_postprocess_id);
+	pp_fxaa.EnableFXAA();
 
 
 
@@ -302,22 +307,24 @@ void gl_execute(GLFWwindow *window) {
 		//winsize = vec2(width, height);
 
 		//############################ON RESHAPE POSTPROCESS################################
-		//スクリーンサイズ変更時にテクスチャサイズ、深度バッファ（レンダバッファ）サイズの変更が必要
-		// On reshape
-		//テクスチャのリサイズ
-		glBindTexture(GL_TEXTURE_2D, renderedTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		//レンダバッファ（深度バッファ）のリサイズ
-		glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
-		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		////スクリーンサイズ変更時にテクスチャサイズ、深度バッファ（レンダバッファ）サイズの変更が必要
+		//// On reshape
+		////テクスチャのリサイズ
+		//glBindTexture(GL_TEXTURE_2D, renderedTexture);
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		//glBindTexture(GL_TEXTURE_2D, 0);
+		////レンダバッファ（深度バッファ）のリサイズ
+		//glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
+		//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+		//glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		//############################ON RESHAPE POSTPROCESS################################
-
+		pp_fxaa.Reshape(window);
 
 		//レンダリング開始時にFBOをバインドする。
 		//そうするとレンダバッファではなくて、テクスチャに色フレームが描画されるようになる
-		glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+		//glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+		pp_fxaa.Bind();
+		
 		glViewport(0, 0, width, height);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -366,47 +373,50 @@ void gl_execute(GLFWwindow *window) {
 
 
 		//レンダリング終了時にFBOのバインドを解除する
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		pp_fxaa.DeBind();
 
-		glViewport(0, 0, width, height);
 
-		//ここからポストプロセシング
-		glClearColor(0.0, 0.0, 0.0, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glViewport(0, 0, width, height);
 
-		//ポストプロセスに使用するシェーダーを起動
+		////ここからポストプロセシング
+		//glClearColor(0.0, 0.0, 0.0, 1.0);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		////ポストプロセスに使用するシェーダーを起動
 		//glUseProgram(shader_postprocess_id);
-		//glUseProgram(shader_fxaa_id);
-		glUseProgram(shader_fxaa2_id);
+		////glUseProgram(shader_fxaa_id);
+		////glUseProgram(shader_fxaa2_id);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, renderedTexture);
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, renderedTexture);
 
-		//glUniform1i(texID, 0);
+		////glUniform1i(texID, 0);
 
-		//glUniform1i(texID_fxaa, 0);
-		//glUniform1f(uniform_w, (float)width);
-		//glUniform1f(uniform_h, (float)height);
+		////glUniform1i(texID_fxaa, 0);
+		////glUniform1f(uniform_w, (float)width);
+		////glUniform1f(uniform_h, (float)height);
 
-		glUniform1i(texID_fxaa2, 0);
-		glUniform1f(uniform2_w, (float)width);
-		glUniform1f(uniform2_h, (float)height);
+		//glUniform1i(texID_fxaa2, 0);
+		//glUniform1f(uniform2_w, (float)width);
+		//glUniform1f(uniform2_h, (float)height);
 
-		//頂点バッファ
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
-		glVertexAttribPointer(
-			0
-			, 3
-			, GL_FLOAT
-			, GL_FALSE
-			, 0
-			, (void *)0
-			);
-		//描画
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glDisableVertexAttribArray(0);
+		////頂点バッファ
+		//glEnableVertexAttribArray(0);
+		//glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+		//glVertexAttribPointer(
+		//	0
+		//	, 3
+		//	, GL_FLOAT
+		//	, GL_FALSE
+		//	, 0
+		//	, (void *)0
+		//	);
+		////描画
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
+		//glDisableVertexAttribArray(0);
 
+		pp_fxaa.Render();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -414,15 +424,21 @@ void gl_execute(GLFWwindow *window) {
 		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
 			glfwSetWindowShouldClose(window, 1);
 		}
+		else if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_Z)) {
+			pp_fxaa.EnableFXAA();
+		}
+		else if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_X)) {
+			pp_fxaa.DisableFXAA();
+		}
 
 	}
 
 	//リソースの開放
-	glDeleteFramebuffers(1, &FramebufferName);
-	glDeleteTextures(1, &renderedTexture);
-	glDeleteRenderbuffers(1, &depthrenderbuffer);
-	glDeleteBuffers(1, &quad_vertexbuffer);
-	glDeleteVertexArrays(1, &VertexArrayID);
+	//glDeleteFramebuffers(1, &FramebufferName);
+	//glDeleteTextures(1, &renderedTexture);
+	//glDeleteRenderbuffers(1, &depthrenderbuffer);
+	//glDeleteBuffers(1, &quad_vertexbuffer);
+	//glDeleteVertexArrays(1, &VertexArrayID);
 }
 
 
