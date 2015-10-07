@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{69FE9B3B-123F-42E1-8776-6FD8AC1300CD}</ProjectGuid>
-    <RootNamespace>OpenGLtest8</RootNamespace>
+    <ProjectGuid>{05D09ADC-E661-4515-BC7D-198B70382DF8}</ProjectGuid>
+    <RootNamespace>OpenGLtest9</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -69,8 +69,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);$(SolutionDir)../../Dlls;</ExecutablePath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)../../ogldev/Include;$(SolutionDir)../../Inc;</IncludePath>
+    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);$(PATH);$(SolutionDir)../../Dlls;</ExecutablePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)../../ogldev/Include;$(SolutionDir)../../Inc;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(SolutionDir)../../Lib;</LibraryPath>
+    <SourcePath>$(VC_SourcePath);$(SolutionDir)../../ogldev/Common;</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);$(PATH);$(SolutionDir)../../Dlls;</ExecutablePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)../../ogldev/Include;$(SolutionDir)../../Inc;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(SolutionDir)../../Lib;</LibraryPath>
     <SourcePath>$(VC_SourcePath);$(SolutionDir)../../ogldev/Common;</SourcePath>
   </PropertyGroup>
@@ -123,21 +129,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\test8\controls.cpp" />
-    <ClCompile Include="..\..\..\test8\Importer.cpp" />
-    <ClCompile Include="..\..\..\test8\main.cpp" />
-    <ClCompile Include="..\..\..\test8\Object.cpp" />
-    <ClCompile Include="..\..\..\test8\PostProcessing.cpp" />
-    <ClCompile Include="..\..\..\test8\shader.cpp" />
-    <ClCompile Include="..\..\..\test8\texture.cpp" />
+    <ClCompile Include="..\..\..\test9\controls.cpp" />
+    <ClCompile Include="..\..\..\test9\Importer.cpp" />
+    <ClCompile Include="..\..\..\test9\main.cpp" />
+    <ClCompile Include="..\..\..\test9\Object.cpp" />
+    <ClCompile Include="..\..\..\test9\PostProcessing.cpp" />
+    <ClCompile Include="..\..\..\test9\shader.cpp" />
+    <ClCompile Include="..\..\..\test9\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\test8\controls.hpp" />
-    <ClInclude Include="..\..\..\test8\Importer.hpp" />
-    <ClInclude Include="..\..\..\test8\Object.hpp" />
-    <ClInclude Include="..\..\..\test8\PostProcessing.hpp" />
-    <ClInclude Include="..\..\..\test8\shader.hpp" />
-    <ClInclude Include="..\..\..\test8\texture.hpp" />
+    <ClInclude Include="..\..\..\test9\controls.hpp" />
+    <ClInclude Include="..\..\..\test9\Importer.hpp" />
+    <ClInclude Include="..\..\..\test9\Object.hpp" />
+    <ClInclude Include="..\..\..\test9\PostProcessing.hpp" />
+    <ClInclude Include="..\..\..\test9\shader.hpp" />
+    <ClInclude Include="..\..\..\test9\texture.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\GLSL\fxaa_fs.glsl" />
@@ -150,7 +156,6 @@
     <None Include="..\..\..\GLSL\StandardShading_fs_non_tex.glsl" />
     <None Include="..\..\..\GLSL\StandardShading_vs.glsl" />
     <None Include="..\..\..\GLSL\StandardShading_vs_non_tex.glsl" />
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

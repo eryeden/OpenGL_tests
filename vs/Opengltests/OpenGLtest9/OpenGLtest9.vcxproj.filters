@@ -15,59 +15,58 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\test8\Importer.cpp">
+    <ClCompile Include="..\..\..\test9\controls.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test8\main.cpp">
+    <ClCompile Include="..\..\..\test9\Importer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test8\Object.cpp">
+    <ClCompile Include="..\..\..\test9\main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test8\PostProcessing.cpp">
+    <ClCompile Include="..\..\..\test9\Object.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test8\shader.cpp">
+    <ClCompile Include="..\..\..\test9\PostProcessing.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test8\texture.cpp">
+    <ClCompile Include="..\..\..\test9\shader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test8\controls.cpp">
+    <ClCompile Include="..\..\..\test9\texture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\test8\Importer.hpp">
+    <ClInclude Include="..\..\..\test9\controls.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\test8\Object.hpp">
+    <ClInclude Include="..\..\..\test9\Importer.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\test8\PostProcessing.hpp">
+    <ClInclude Include="..\..\..\test9\Object.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\test8\shader.hpp">
+    <ClInclude Include="..\..\..\test9\PostProcessing.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\test8\texture.hpp">
+    <ClInclude Include="..\..\..\test9\shader.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\test8\controls.hpp">
+    <ClInclude Include="..\..\..\test9\texture.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\GLSL\fxaa_fs.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_fs2.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_vs.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_vs2.glsl" />
+    <None Include="..\..\..\GLSL\pp_fs.glsl" />
+    <None Include="..\..\..\GLSL\pp_vs.glsl" />
     <None Include="..\..\..\GLSL\StandardShading_fs.glsl" />
     <None Include="..\..\..\GLSL\StandardShading_fs_non_tex.glsl" />
     <None Include="..\..\..\GLSL\StandardShading_vs.glsl" />
     <None Include="..\..\..\GLSL\StandardShading_vs_non_tex.glsl" />
-    <None Include="..\..\..\GLSL\fxaa_vs.glsl" />
-    <None Include="..\..\..\GLSL\pp_fs.glsl" />
-    <None Include="..\..\..\GLSL\pp_vs.glsl" />
-    <None Include="..\..\..\GLSL\fxaa_fs.glsl" />
-    <None Include="..\..\..\GLSL\fxaa_fs2.glsl" />
-    <None Include="..\..\..\GLSL\fxaa_vs2.glsl" />
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

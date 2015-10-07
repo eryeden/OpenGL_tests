@@ -17,7 +17,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CA4EA719-01B8-41C1-9341-674877175577}</ProjectGuid>
     <RootNamespace>Opengltests</RootNamespace>
-    <ProjectName>Opengltests6</ProjectName>
+    <ProjectName>OpenGLtest6</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
