@@ -70,6 +70,7 @@
 class MdlImporter{
 public:
 	MdlImporter(const GLuint &_ShaderIDNonTexture, const GLuint &_ShaderIDTexture);
+	MdlImporter();
 	~MdlImporter();
 
 	//ƒ‚ƒfƒ‹“Ç‚İ‚İ

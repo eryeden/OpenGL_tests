@@ -46,44 +46,69 @@
 
 #include "Importer.hpp"
 
+namespace Space {
 
-class Object {
-public:
-	Object(const GLuint &_id_shader_non_tex, const GLuint & _id_shader_use_tex);
-	
-	void LoadModel(const std::string & _file_path);
-	void SetModelPositionWorldspace(const glm::vec3 & _position);
-	void SetModelAttitude(const glm::mat4 & _attitude);
-	void SetModelColor(const glm::vec3 & _color);
+	class Object {
+	public:
+		Object(const bool & is_use_texture);
 
-	void Render();
+		void LoadModel(const std::string & _file_path);
+		void Object::LoadModel(const std::string & _file_path, const glm::vec3 _color);
+		void SetObjectPositionModelSpace(const glm::vec3 & _position);
+		void SetObjectAttitude(const glm::mat4 & _attitude);
+		void SetObjectColor(const glm::vec3 & _color);
 
-private:
-	bool is_use_texture;
-	MdlImporter importer;
+		glm::mat4 GetM() { return M; }
 
-	glm::vec3 position_worldspace;
-	glm::mat4 attitude_mdoel;
-	glm::vec3 color_model;
+		void Render();
 
-	GLuint id_shader_program;
+	private:
+		bool is_use_texture;
+		MdlImporter importer;
 
-	GLuint id_location_MVP;
-	GLuint id_location_M;
-	GLuint id_location_V;
+		glm::vec3 position_modelspace;
+		glm::mat4 attitude_object;
+		glm::vec3 color_object;
 
-	glm::mat4 M;
-	glm::mat4 V;
-	glm::mat4 P;
-	glm::mat4 MVP;
+		glm::mat4 M;
+		glm::mat4 M_translate;
+		glm::mat4 M_attitude;
 
-	void UpdateMVP();
+		void UpdateM();
 
-	void RenderUseTexture();
-	void RenderNonTexture();
-	
+	};
 
-};
+	class Model {
+	public:
 
+		Model();
+
+		void Render(
+			const glm::mat4 & _projection
+			, const glm::mat4 & _view
+			, const GLuint & _handler_unifrom_MVP
+			, const GLuint & _handler_unifrom_M
+			, const GLuint & _handler_unifrom_V);
+
+		void AddObject(Space::Object * _object);
+
+		void SetModelPositionWorldSpace(const glm::vec3 & _position);
+		void SetModelAttitude(const glm::mat4 & _attitude);
+
+	private:
+
+		glm::vec3 position_worldspace;
+		glm::mat4 attitude_model;
+
+		glm::mat4 M;
+		glm::mat4 M_translate;
+		glm::mat4 M_attitude;
+
+		std::vector<Object *> objects;
+
+		void UpdateM();
+	};
+
+}
 
 #endif	//OBJECT_HPP

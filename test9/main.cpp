@@ -31,6 +31,7 @@
 #include "shader.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/geometric.hpp>
 using namespace glm;
 
 //#include "gli/gli.hpp"
@@ -88,6 +89,8 @@ int main() {
 	const GLubyte* version = glGetString(GL_VERSION);
 	printf("Renderer: %s\n", renderer);
 	printf("Version: %s\n", version);
+
+
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -153,6 +156,7 @@ void gl_execute(GLFWwindow *window) {
 
 
 	mat4 Model = mat4(1.0f); // 単位行列
+	mat4 Attitude = mat4(1.0f); //姿勢
 	Model = mat4(
 		1.0f, 0.0f, 0.0f, 0.0f
 		, 0.0f, 1.0f, 0.0f, 0.0f
@@ -176,7 +180,7 @@ void gl_execute(GLFWwindow *window) {
 	GLuint MatrixID_M = glGetUniformLocation(shader_nontex_id, "M");
 	GLuint Vector3ID_LightPosition = glGetUniformLocation(shader_nontex_id, "LightPosition_worldspace");
 	vec3 lightPos = vec3(0, 40, 0);
-
+	  
 	MdlImporter imptr(shader_nontex_id, shader_usetex_id);
 	MdlImporter imptr1(shader_nontex_id, shader_usetex_id);
 
@@ -298,7 +302,7 @@ void gl_execute(GLFWwindow *window) {
 	PostProcessingFXAA pp_fxaa(shader_fxaa2_id, shader_postprocess_id);
 	pp_fxaa.EnableFXAA();
 
-
+	
 
 	while (!glfwWindowShouldClose(window)) {
 		_update_fps_counter(window);
@@ -338,15 +342,29 @@ void gl_execute(GLFWwindow *window) {
 			, 0.0f, 0.0f, 1.0f, 0.0f
 			, 0.0f, 0.0f, 0.0f, 1.0f
 			);
+
+		Attitude = mat4(
+			1.0f, 0.0f, 0.0f, 0.0f
+			, 0.0f, 1.0f, 0.0f, 0.0f
+			, 0.0f, 0.0f, 1.0f, 0.0f
+			, 0.0f, 0.0f, 0.0f, 1.0f
+			);
+
+#define __PI__ 3.14159265359f
+
+		Attitude = glm::rotate(Attitude, (float)(__PI__ / 180.0f * 45.0f), vec3(0.0f, 0.0f, 1.0f));
+		Attitude = glm::translate(Attitude, vec3(0.0f, 0.0f, 3.0f));
+		
 		//MVP = Projection * View * Model; //これをGLSLに渡す
 
 		computeMatricesFromInputs(window);
 		//Projection = getProjectionMatrix();
-		View = getViewMatrix();
-		MVP = Projection * View * Model;
+		//View = getViewMatrix();
+		//MVP = Projection * View * Model;
+		MVP = Projection * View * Attitude;
 
 		glUniformMatrix4fv(MatrixID_MVP, 1, GL_FALSE, &MVP[0][0]);
-		glUniformMatrix4fv(MatrixID_M, 1, GL_FALSE, &Model[0][0]);
+		glUniformMatrix4fv(MatrixID_M, 1, GL_FALSE, &Attitude[0][0]);
 		glUniformMatrix4fv(MatrixID_V, 1, GL_FALSE, &View[0][0]);
 
 		lightPos = vec3(4, 4, 4);
@@ -369,6 +387,10 @@ void gl_execute(GLFWwindow *window) {
 		glUniform3f(Vector3ID_LightPosition, lightPos.x, lightPos.y, lightPos.z);
 
 		imptr1.Render();
+
+		imptr1.Render();
+
+		imptr.Render();
 
 
 

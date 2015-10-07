@@ -136,6 +136,7 @@
     <ClCompile Include="..\..\..\test9\PostProcessing.cpp" />
     <ClCompile Include="..\..\..\test9\shader.cpp" />
     <ClCompile Include="..\..\..\test9\texture.cpp" />
+    <ClCompile Include="..\..\..\test9\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\test9\controls.hpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="..\..\..\test9\PostProcessing.hpp" />
     <ClInclude Include="..\..\..\test9\shader.hpp" />
     <ClInclude Include="..\..\..\test9\texture.hpp" />
+    <ClInclude Include="..\..\..\test9\World.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\GLSL\fxaa_fs.glsl" />

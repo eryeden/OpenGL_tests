@@ -160,6 +160,11 @@ MdlImporter::MdlImporter(const GLuint &_ShaderIDNonTexture, const GLuint &_Shade
 	//glBindVertexArray(VaoID);
 }
 
+MdlImporter::MdlImporter() {
+	UseTexture = false;
+}
+
+
 MdlImporter::~MdlImporter(){
 	Clear();
 }
