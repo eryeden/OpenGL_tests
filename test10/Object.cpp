@@ -6,9 +6,11 @@ using namespace glm;
 
 Object::Object()
 	:importer()
+	, M(mat4(1.0f))
+	, M_translate(mat4(1.0f))
+	, M_attitude(mat4(1.0f))
 {
-	position_modelspace = vec3(0, 0, 0);
-	attitude_object = rotate(mat4(1.0), 0.0f, vec3(0, 0, 1.0));
+	M = M_translate * M_attitude;
 	color_object = vec3(1.0f, 1.0f, 1.0f);
 	UpdateM();
 }
@@ -28,14 +30,12 @@ void Object::LoadModel(
 }
 
 void Object::SetObjectPositionModelSpace(const glm::vec3 & _position) {
-	position_modelspace = _position;
 	M_translate = translate(mat4(1.0f), _position);
 	M = M_translate * M_attitude;
 }
 
 void Object::SetObjectAttitude(const glm::mat4 & _attitude) {
-	attitude_object = _attitude;
-	M_attitude = attitude_object;
+	M_attitude = _attitude;
 	M = M_translate * M_attitude;
 }
 
@@ -76,8 +76,6 @@ void Object::Render(
 }
 
 void Object::UpdateM() {
-	M_translate = translate(mat4(1.0f), position_modelspace);
-	M_attitude = attitude_object;
 	M = M_translate * M_attitude;
 }
 

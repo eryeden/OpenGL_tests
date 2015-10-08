@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="GLSL">
+      <UniqueIdentifier>{870c6ab2-36bf-4331-8088-cbcc17f798cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\test10\controls.cpp">
@@ -61,15 +64,35 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\GLSL\fxaa_fs.glsl" />
-    <None Include="..\..\..\GLSL\fxaa_fs2.glsl" />
-    <None Include="..\..\..\GLSL\fxaa_vs.glsl" />
-    <None Include="..\..\..\GLSL\fxaa_vs2.glsl" />
-    <None Include="..\..\..\GLSL\pp_fs.glsl" />
-    <None Include="..\..\..\GLSL\pp_vs.glsl" />
-    <None Include="..\..\..\GLSL\StandardShading_fs.glsl" />
-    <None Include="..\..\..\GLSL\StandardShading_fs_non_tex.glsl" />
-    <None Include="..\..\..\GLSL\StandardShading_vs.glsl" />
-    <None Include="..\..\..\GLSL\StandardShading_vs_non_tex.glsl" />
+    <None Include="..\..\..\GLSL\fxaa_fs.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\..\GLSL\fxaa_fs2.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\..\GLSL\fxaa_vs.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\..\GLSL\fxaa_vs2.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\..\GLSL\pp_fs.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\..\GLSL\pp_vs.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\..\GLSL\StandardShading_fs.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\..\GLSL\StandardShading_fs_non_tex.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\..\GLSL\StandardShading_vs.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="..\..\..\GLSL\StandardShading_vs_non_tex.glsl">
+      <Filter>GLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

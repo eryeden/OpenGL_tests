@@ -51,8 +51,8 @@ PostProcessingFXAA::~PostProcessingFXAA() {
 }
 
 void PostProcessingFXAA::Reshape(
-	GLsizei width
-	, GLsizei height
+	int width
+	, int height
 	) {
 	//スクリーンサイズ変更時にテクスチャサイズ、深度バッファ（レンダバッファ）サイズの変更が必要
 	// On reshape

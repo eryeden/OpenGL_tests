@@ -69,8 +69,8 @@ public:
 		);
 
 	void Reshape(
-		GLsizei width
-		, GLsizei height);
+		int width
+		, int height);
 
 	void Reshape(const GLFWwindow * window);
 

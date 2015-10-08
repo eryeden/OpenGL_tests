@@ -45,6 +45,8 @@
 
 #include "PostProcessing.hpp"
 
+#define USE_POSTPROCESS
+
 namespace Space {
 
 
@@ -93,8 +95,8 @@ namespace Space {
 	private:
 		
 
-		glm::vec3 position_modelspace;
-		glm::mat4 attitude_object;
+		//glm::vec3 position_modelspace;
+		//glm::mat4 attitude_object;
 		glm::vec3 color_object;
 
 		glm::mat4 M;
@@ -165,6 +167,9 @@ namespace Space {
 
 		void Render();
 
+		GLuint GetPPShader_pass() { return info.id_shader_postprocess_passthrough; }
+		GLuint GetPPShader_filter() { return info.id_shader_postprocess_filter; }
+
 	private:
 
 		//ÉJÉÅÉâèÍèä
@@ -202,8 +207,9 @@ namespace Space {
 
 		struct InfoShader info;
 
-		//PostProcessingFXAA pp_fxaa;
-
+#ifdef USE_POSTPROCESS
+		PostProcessingFXAA *pp_fxaa;
+#endif
 
 	};
 

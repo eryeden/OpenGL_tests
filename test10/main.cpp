@@ -50,7 +50,7 @@ using namespace glm;
 #include "World.hpp"
 
 //家の場合
-#define KIKUTI_HOME
+//#define KIKUTI_HOME
 
 //void gl_execute(GLFWwindow *window);
 void gl_execute2(GLFWwindow * window);
@@ -106,6 +106,129 @@ int main() {
 	glfwTerminate();
 	return 0;
 }
+
+
+
+void gl_execute2(GLFWwindow * window) {
+
+
+	Space::World world(window);
+
+#ifdef KIKUTI_HOME
+
+	world.BindShader(
+		"C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs.glsl"
+		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs.glsl"
+		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
+		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl"
+		);
+
+	world.BindShaderPostProcess(
+		"C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/pp_vs.glsl"
+		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/pp_fs.glsl"
+		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/fxaa_vs2.glsl"
+		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/fxaa_fs2.glsl"
+		);
+
+#else
+
+	world.BindShader(
+		"C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs.glsl"
+		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs.glsl"
+		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
+		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl"
+		);
+
+	world.BindShaderPostProcess(
+		"C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/pp_vs.glsl"
+		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/pp_fs.glsl"
+		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/fxaa_vs2.glsl"
+		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/fxaa_fs2.glsl"
+		);
+
+#endif
+
+	Space::Object obj, obj1, obj2;
+	Space::Model mdl, mdl1;
+#ifdef KIKUTI_HOME
+	obj.LoadModel("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4));
+	obj1.LoadModel("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.964, 0.714, 0));
+	obj2.LoadModel("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0, 0.71, 0.101));
+	//imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4)); //#cc00000
+	//imptr1.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/Asm.stl", vec3(0.964, 0.714, 0));
+	//imptr1.Load("C:/Users/ery/OneDrive/Documents/Models/Suspension.stl", vec3(0.964, 0.714, 0));
+	//imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/cube1.obj", vec3(1, 1, 1)); //#cc00000
+#else
+	obj.LoadModel("C:/Users/B4/Source/Repos/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4));
+	obj1.LoadModel("C:/Users/B4/Source/Repos/OpenGL_tests/models/t1.stl", vec3(0.964, 0.714, 0));
+	obj2.LoadModel("C:/Users/B4/Source/Repos/OpenGL_tests/models/t1.stl", vec3(0, 0.71, 0.101));
+	//imptr.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/stoadmm.stl", vec3(0.964, 0.714, 0)); //#cc00000
+	//imptr1.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/Asm.stl", vec3(0, 0.71, 0.101));
+	//imptr.Load("C:\Users\B4\Source\Repos\OpenGL_tests\models/cube1.obj", vec3(1, 1, 1)); //#cc00000
+	//imptr.Load("C:/Users/B4/OneDrive/Documents/Models/PersonalComputer.stl", vec3(0, 0.8, 0.8)); //#cc00000
+#endif
+
+#define __PI__ 	3.14159265359f
+
+	world.SetPositionCamera(vec3(10, 10, 10));
+
+	obj.SetObjectPositionModelSpace(vec3(0.0, 0.0, 0.0));
+	obj.SetObjectAttitude(rotate(mat4(1.0f), (float)(__PI__ / 180.0 * 20.0), vec3(0.0, 0.0, 1.0)));
+
+	obj1.SetObjectPositionModelSpace(vec3(0.0, 0.0, 2.0));
+	obj1.SetObjectAttitude(rotate(mat4(1.0f), (float)(__PI__ / 180.0 * 20.0), vec3(0.0, 1.0, 0.0)));
+
+	obj2.SetObjectPositionModelSpace(vec3(0.0, 0.0, -2.0));
+	obj2.SetObjectAttitude(rotate(mat4(1.0f), (float)(__PI__ / 180.0 * 20.0), vec3(1.0, 0.0, 0.0)));
+
+	mdl.AddObject(&obj);
+	mdl.AddObject(&obj1);
+	mdl.AddObject(&obj2);
+	mdl.SetModelPositionWorldSpace(vec3(5.0, 0.0, 0.0));
+	mdl.SetModelAttitude(rotate(mat4(1.0f), (float)(__PI__ / 180.0 * 90.0), vec3(0.0, 0.0, 1.0)));
+
+	mdl1.AddObject(&obj);
+	mdl1.AddObject(&obj1);
+	mdl1.AddObject(&obj2);
+	mdl1.SetModelPositionWorldSpace(vec3(-5.0, 0.0, 0.0));
+	mdl1.SetModelAttitude(rotate(mat4(1.0f), (float)(__PI__ / 180.0 * 0.0), vec3(0.0, 0.0, 1.0)));
+
+	world.AddModel(&mdl);
+	world.AddModel(&mdl1);
+
+	while (!glfwWindowShouldClose(window)) {
+		_update_fps_counter(window);
+
+		world.Render();
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+
+		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+			glfwSetWindowShouldClose(window, 1);
+		}
+
+	}
+}
+
+void _update_fps_counter(GLFWwindow * window) {
+	static double previous_seconds = glfwGetTime();
+	static int frame_count;
+	double current_seconds = glfwGetTime();
+	double elapsed_seconds = current_seconds - previous_seconds;
+	if (elapsed_seconds > 0.25) {
+		previous_seconds = current_seconds;
+		double fps = (double)frame_count / elapsed_seconds;
+		char tmp[128];
+		sprintf(tmp, "opengl @ fps: %.2f", fps);
+		glfwSetWindowTitle(window, tmp);
+		frame_count = 0;
+	}
+	frame_count++;
+}
+
+
+
 
 //
 //void gl_execute(GLFWwindow *window) {
@@ -468,99 +591,3 @@ int main() {
 //	//glDeleteVertexArrays(1, &VertexArrayID);
 //}
 //
-
-void gl_execute2(GLFWwindow * window) {
-
-
-	Space::World world(window);
-
-#ifdef KIKUTI_HOME
-
-	world.BindShader(
-		"C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs.glsl"
-		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs.glsl"
-		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
-		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl"
-		);
-
-	world.BindShaderPostProcess(
-		"C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/pp_vs.glsl"
-		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/pp_fs.glsl"
-		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/fxaa_vs2.glsl"
-		, "C:/Users/ery/Documents/local_devel/OpenGL_tests/GLSL/fxaa_fs2.glsl"
-		);
-
-#else
-
-	world.BindShader(
-		"C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs.glsl"
-		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs.glsl"
-		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_vs_non_tex.glsl"
-		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/StandardShading_fs_non_tex.glsl"
-		);
-
-	world.BindShaderPostProcess(
-		"C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/pp_vs.glsl"
-		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/pp_fs.glsl"
-		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/fxaa_vs2.glsl"
-		, "C:/Users/B4/Source/Repos/OpenGL_tests/GLSL/fxaa_fs2.glsl"
-		);
-
-#endif
-
-	Space::Object obj;
-	Space::Model mdl;
-#ifdef KIKUTI_HOME
-	obj.LoadModel("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4));
-	//imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4)); //#cc00000
-	//imptr1.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/Asm.stl", vec3(0.964, 0.714, 0));
-	//imptr1.Load("C:/Users/ery/OneDrive/Documents/Models/Suspension.stl", vec3(0.964, 0.714, 0));
-	//imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/cube1.obj", vec3(1, 1, 1)); //#cc00000
-#else
-	obj.LoadModel("C:/Users/B4/Source/Repos/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4));
-	//imptr.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/stoadmm.stl", vec3(0.964, 0.714, 0)); //#cc00000
-	//imptr1.Load("C:/Users/B4/Source/Repos/OpenGL_tests/models/Asm.stl", vec3(0, 0.71, 0.101));
-	//imptr.Load("C:\Users\B4\Source\Repos\OpenGL_tests\models/cube1.obj", vec3(1, 1, 1)); //#cc00000
-	//imptr.Load("C:/Users/B4/OneDrive/Documents/Models/PersonalComputer.stl", vec3(0, 0.8, 0.8)); //#cc00000
-#endif
-
-	obj.SetObjectPositionModelSpace(vec3(0.0, 0.0, 0.0));
-	obj.SetObjectAttitude(rotate(mat4(1.0f), 0.0f, vec3(0.0, 0.0, 0.0)));
-
-	mdl.AddObject(&obj);
-	mdl.SetModelPositionWorldSpace(vec3(0.0, 0.0, 0.0));
-	mdl.SetModelAttitude(rotate(mat4(1.0f), 0.0f, vec3(0.0, 0.0, 0.0)));
-
-	world.AddModel(&mdl);
-
-	while (!glfwWindowShouldClose(window)) {
-		_update_fps_counter(window);
-
-		world.Render();
-
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-
-		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
-			glfwSetWindowShouldClose(window, 1);
-		}
-
-	}
-}
-
-void _update_fps_counter(GLFWwindow * window) {
-	static double previous_seconds = glfwGetTime();
-	static int frame_count;
-	double current_seconds = glfwGetTime();
-	double elapsed_seconds = current_seconds - previous_seconds;
-	if (elapsed_seconds > 0.25) {
-		previous_seconds = current_seconds;
-		double fps = (double)frame_count / elapsed_seconds;
-		char tmp[128];
-		sprintf(tmp, "opengl @ fps: %.2f", fps);
-		glfwSetWindowTitle(window, tmp);
-		frame_count = 0;
-	}
-	frame_count++;
-}
-
