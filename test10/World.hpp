@@ -89,9 +89,9 @@ namespace Space {
 			, const glm::vec3 & _light_position
 			, const GLfloat & _light_power
 			);
-
-	private:
 		MdlImporter importer;
+	private:
+		
 
 		glm::vec3 position_modelspace;
 		glm::mat4 attitude_object;
@@ -122,7 +122,7 @@ namespace Space {
 
 		void SetModelPositionWorldSpace(const glm::vec3 & _position);
 		void SetModelAttitude(const glm::mat4 & _attitude);
-
+		std::vector<Object *> objects;
 	private:
 
 		glm::vec3 position_worldspace;
@@ -132,7 +132,7 @@ namespace Space {
 		glm::mat4 M_translate;
 		glm::mat4 M_attitude;
 
-		std::vector<Object *> objects;
+		
 
 		void UpdateM();
 	};
@@ -202,7 +202,7 @@ namespace Space {
 
 		struct InfoShader info;
 
-		PostProcessingFXAA pp_fxaa;
+		//PostProcessingFXAA pp_fxaa;
 
 
 	};

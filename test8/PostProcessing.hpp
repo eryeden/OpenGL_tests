@@ -73,7 +73,7 @@ public:
 	void DisableFXAA();
 	void ToggleFXAA();
 
-private:
+private:   
 
 	GLsizei width;
 	GLsizei height;

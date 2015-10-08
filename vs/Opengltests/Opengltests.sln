@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLtest8", "OpenGLtest8\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLtest9", "OpenGLtest9\OpenGLtest9.vcxproj", "{05D09ADC-E661-4515-BC7D-198B70382DF8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLtest10", "OpenGLtest10\OpenGLtest10.vcxproj", "{E427DE91-68C9-430A-B696-15B747B9AE59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -84,6 +86,22 @@ Global
 		{05D09ADC-E661-4515-BC7D-198B70382DF8}.Release|Win32.Build.0 = Release|Win32
 		{05D09ADC-E661-4515-BC7D-198B70382DF8}.Release|x64.ActiveCfg = Release|x64
 		{05D09ADC-E661-4515-BC7D-198B70382DF8}.Release|x64.Build.0 = Release|x64
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.Debug|Win32.Build.0 = Debug|Win32
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.Debug|x64.ActiveCfg = Debug|x64
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.Debug|x64.Build.0 = Debug|x64
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.OpenGL_1|Win32.ActiveCfg = Release|Win32
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.OpenGL_1|Win32.Build.0 = Release|Win32
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.OpenGL_1|x64.ActiveCfg = Release|x64
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.OpenGL_1|x64.Build.0 = Release|x64
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.OpenGL|Win32.ActiveCfg = Release|Win32
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.OpenGL|Win32.Build.0 = Release|Win32
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.OpenGL|x64.ActiveCfg = Release|x64
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.OpenGL|x64.Build.0 = Release|x64
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.Release|Win32.ActiveCfg = Release|Win32
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.Release|Win32.Build.0 = Release|Win32
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.Release|x64.ActiveCfg = Release|x64
+		{E427DE91-68C9-430A-B696-15B747B9AE59}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

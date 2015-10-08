@@ -330,8 +330,8 @@ void gl_execute(GLFWwindow *window) {
 		pp_fxaa.Bind();
 		
 		glViewport(0, 0, width, height);
-
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 		glUseProgram(shader_nontex_id);
 
 		Projection = perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f); //glPerspective
@@ -454,7 +454,7 @@ void gl_execute(GLFWwindow *window) {
 		}
 
 	}
-
+	 //分岐
 	//リソースの開放
 	//glDeleteFramebuffers(1, &FramebufferName);
 	//glDeleteTextures(1, &renderedTexture);
