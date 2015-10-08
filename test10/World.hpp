@@ -70,6 +70,8 @@ namespace Space {
 		GLuint id_handler_unifrom_lightposition_non_texture;
 	};
 
+	
+
 
 	class Object {
 	public:
@@ -137,8 +139,35 @@ namespace Space {
 		
 
 		void UpdateM();
+
+		void RenderAxis();
+		void RenderAxisShort();
+		void InitializeAxis();
+		GLuint vertex_buffer_axis;
+		GLuint vertex_buffer_axis_short;
+		GLuint color_buffer_axis;
+		GLuint normal_buffer_axis;
 	};
 
+		class Ground {
+	public:
+		Ground(GLfloat _width, GLfloat _height, GLfloat _grid_interval);
+		void Render();
+
+	private:
+
+		
+		GLuint vertex_buffer_ground;
+		GLuint color_buffer_ground;
+		GLuint normal_buffer_ground;
+
+		GLuint vertex_buffer_grid;
+		GLuint color_buffer_grid;
+		GLuint normal_buffer_grid;
+
+
+
+	};
 
 	class World {
 	public:
@@ -207,11 +236,17 @@ namespace Space {
 
 		struct InfoShader info;
 
+		Ground gnd;
+
 #ifdef USE_POSTPROCESS
 		PostProcessingFXAA *pp_fxaa;
 #endif
 
 	};
+
+
+
+
 
 };
 

@@ -159,6 +159,7 @@ void gl_execute2(GLFWwindow * window) {
 	//imptr1.Load("C:/Users/ery/OneDrive/Documents/Models/Suspension.stl", vec3(0.964, 0.714, 0));
 	//imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/cube1.obj", vec3(1, 1, 1)); //#cc00000
 #else
+	//obj.LoadModel("C:/Users/B4/OneDrive/Documents/Models/PersonalComputer.stl", vec3(0.8, 0.2, 0.4));
 	obj.LoadModel("C:/Users/B4/Source/Repos/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4));
 	obj1.LoadModel("C:/Users/B4/Source/Repos/OpenGL_tests/models/t1.stl", vec3(0.964, 0.714, 0));
 	obj2.LoadModel("C:/Users/B4/Source/Repos/OpenGL_tests/models/t1.stl", vec3(0, 0.71, 0.101));
@@ -170,7 +171,8 @@ void gl_execute2(GLFWwindow * window) {
 
 #define __PI__ 	3.14159265359f
 
-	world.SetPositionCamera(vec3(10, 10, 10));
+	//world.SetPositionCamera(vec3(30, 30, 30));
+	world.SetPositionLight(vec3(10, 10, 10));
 
 	obj.SetObjectPositionModelSpace(vec3(0.0, 0.0, 0.0));
 	obj.SetObjectAttitude(rotate(mat4(1.0f), (float)(__PI__ / 180.0 * 20.0), vec3(0.0, 0.0, 1.0)));
@@ -182,19 +184,19 @@ void gl_execute2(GLFWwindow * window) {
 	obj2.SetObjectAttitude(rotate(mat4(1.0f), (float)(__PI__ / 180.0 * 20.0), vec3(1.0, 0.0, 0.0)));
 
 	mdl.AddObject(&obj);
-	mdl.AddObject(&obj1);
-	mdl.AddObject(&obj2);
+	//mdl.AddObject(&obj1);
+	//mdl.AddObject(&obj2);
 	mdl.SetModelPositionWorldSpace(vec3(5.0, 0.0, 0.0));
 	mdl.SetModelAttitude(rotate(mat4(1.0f), (float)(__PI__ / 180.0 * 90.0), vec3(0.0, 0.0, 1.0)));
 
 	mdl1.AddObject(&obj);
 	mdl1.AddObject(&obj1);
 	mdl1.AddObject(&obj2);
-	mdl1.SetModelPositionWorldSpace(vec3(-5.0, 0.0, 0.0));
+	mdl1.SetModelPositionWorldSpace(vec3(-5.0, 0.0, 3.0));
 	mdl1.SetModelAttitude(rotate(mat4(1.0f), (float)(__PI__ / 180.0 * 0.0), vec3(0.0, 0.0, 1.0)));
 
 	world.AddModel(&mdl);
-	world.AddModel(&mdl1);
+	//world.AddModel(&mdl1);
 
 	while (!glfwWindowShouldClose(window)) {
 		_update_fps_counter(window);
