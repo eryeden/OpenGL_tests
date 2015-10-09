@@ -371,9 +371,14 @@ void MdlImporter::InitMesh(unsigned int Index, const aiMesh* paiMesh, const glm:
 		Z -> -Y
 		*/
 
-		//座標軸変更あり
-		Vertices[i] = (vec3(pPos->x, pPos->z, -pPos->y)); //頂点座標
-		Normals[i] = (vec3(pNormal->x, pNormal->z, -pNormal->y)); //法線
+		////座標軸変更あり
+		//Vertices[i] = (vec3(pPos->x, pPos->z, -pPos->y)); //頂点座標
+		//Normals[i] = (vec3(pNormal->x, pNormal->z, -pNormal->y)); //法線
+		//Colors[i] = (_Color); //色情報
+
+							  //座標軸変更あり
+		Vertices[i] = (vec3(pPos->x, pPos->y, pPos->z)); //頂点座標
+		Normals[i] = (vec3(pNormal->x, pNormal->y, pNormal->z)); //法線
 		Colors[i] = (_Color); //色情報
 
 		//printf("%3.2f%\n", ((double)(i + 1)/((double)paiMesh->mNumVertices) * 100.0));

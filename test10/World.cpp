@@ -5,6 +5,7 @@
 using namespace Space;
 using namespace glm;
 
+
 World::World(GLFWwindow * _window)
 //:pp_fxaa()
 	:gnd(100, 100, 1)
@@ -127,7 +128,11 @@ void World::Render() {
 
 	computeMatricesFromInputs(window);
 
-	SetPositionLight(getPosition());
+	//SetPositionLight(getPosition());
+
+	SetPositionLight(vec3(0, 50, 0));
+
+
 
 #ifdef USE_POSTPROCESS
 	pp_fxaa->Reshape(window);
