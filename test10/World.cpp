@@ -7,7 +7,7 @@ using namespace glm;
 
 World::World(GLFWwindow * _window)
 //:pp_fxaa()
-	:gnd(300, 300)
+	:gnd(100, 100, 1)
 {
 	window = _window;
 	glEnable(GL_DEPTH_TEST);
@@ -25,6 +25,7 @@ World::World(GLFWwindow * _window)
 
 	Projection = perspective(45.0f, (float)width / (float)height, 0.1f, 10000.0f);
 
+	gnd.InitChessBoard(100, 100, 1);
 }
 
 World::~World() {
@@ -139,6 +140,7 @@ void World::Render() {
 	//	, vec3(0, 0, 1));
 	View = getViewMatrix();
 	glViewport(0, 0, width, height);
+	glClearColor(0.8, 0.8, 0.8, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (size_t i = 0; i < models.size(); ++i) {
@@ -170,8 +172,9 @@ void World::Render() {
 		glUniform3f(info.id_handler_unifrom_lightposition_non_texture
 			, position_light.x, position_light.y, position_light.z);
 
-		gnd.Render();
-
+		//gnd.Render();
+		//gnd.RenderGrid();
+		gnd.RenderChess();
 	}
 
 #ifdef USE_POSTPROCESS

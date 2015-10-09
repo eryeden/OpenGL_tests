@@ -50,7 +50,7 @@ using namespace glm;
 #include "World.hpp"
 
 //家の場合
-//#define KIKUTI_HOME
+#define KIKUTI_HOME
 
 //void gl_execute(GLFWwindow *window);
 void gl_execute2(GLFWwindow * window);
@@ -151,7 +151,7 @@ void gl_execute2(GLFWwindow * window) {
 	Space::Object obj, obj1, obj2;
 	Space::Model mdl, mdl1;
 #ifdef KIKUTI_HOME
-	obj.LoadModel("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4));
+	obj.LoadModel("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/keychain.stl", vec3(0.964, 0.714, 0));
 	obj1.LoadModel("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.964, 0.714, 0));
 	obj2.LoadModel("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0, 0.71, 0.101));
 	//imptr.Load("C:/Users/ery/Documents/local_devel/OpenGL_tests/models/t1.stl", vec3(0.8, 0.2, 0.4)); //#cc00000

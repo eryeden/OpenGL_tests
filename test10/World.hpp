@@ -152,7 +152,10 @@ namespace Space {
 		class Ground {
 	public:
 		Ground(GLfloat _width, GLfloat _height, GLfloat _grid_interval);
+		void InitChessBoard(GLfloat _width, GLfloat _height, GLfloat _interval);
 		void Render();
+		void RenderGrid();
+		void RenderChess();
 
 	private:
 
@@ -165,6 +168,12 @@ namespace Space {
 		GLuint color_buffer_grid;
 		GLuint normal_buffer_grid;
 
+		GLuint vertex_buffer_chess;
+		GLuint color_buffer_chess;
+		GLuint normal_buffer_chess;
+
+		unsigned int number_of_indices;
+		unsigned int number_of_vertices_chess;
 
 
 	};

@@ -13,7 +13,7 @@ Object::Object()
 	M = M_translate * M_attitude;
 	color_object = vec3(1.0f, 1.0f, 1.0f);
 	UpdateM();
-	
+
 }
 
 void Object::LoadModel(const std::string & _file_path) {
@@ -312,12 +312,12 @@ Ground::Ground(GLfloat _width, GLfloat _height, GLfloat _grid_interval) {
 	};
 
 	GLfloat colors_ground[] = {
-		0.8, 0.8, 0.8
-		, 0.8, 0.8, 0.8
-		, 0.8, 0.8, 0.8
-		, 0.8, 0.8, 0.8
-		, 0.8, 0.8, 0.8
-		, 0.8, 0.8, 0.8
+		  0.99, 0.99, 0.99
+		, 0.99, 0.99, 0.99
+		, 0.99, 0.99, 0.99
+		, 0.99, 0.99, 0.99
+		, 0.99, 0.99, 0.99
+		, 0.99, 0.99, 0.99
 	};
 
 	GLfloat normal_ground[] = {
@@ -349,6 +349,96 @@ Ground::Ground(GLfloat _width, GLfloat _height, GLfloat _grid_interval) {
 		, sizeof(GLfloat) * 18
 		, colors_ground
 		, GL_STATIC_DRAW);
+
+
+	//GRID
+	std::vector<vec3> vertices_grid;
+	std::vector<vec3> normals_grid;
+	std::vector<vec3> colors_grid;
+
+	GLfloat i, j;
+	i = j = 0;
+	vec3 tmp;// = vec3(i, hd2, 0);
+	vec3 color = vec3(0.6, 0.6, 0.6);
+	vec3 normal = vec3(0, 0, 1);
+
+	while (1) {
+		if (i > wd2) {
+			break;
+		}
+		tmp = vec3(i, 0.01, -hd2);
+		vertices_grid.push_back(tmp);
+		normals_grid.push_back(normal);
+		colors_grid.push_back(color);
+
+		tmp = vec3(i, 0.01, hd2);
+		vertices_grid.push_back(tmp);
+		normals_grid.push_back(normal);
+		colors_grid.push_back(color);
+
+		tmp = vec3(-i, 0.01, -hd2);
+		vertices_grid.push_back(tmp);
+		normals_grid.push_back(normal);
+		colors_grid.push_back(color);
+
+		tmp = vec3(-i, 0.01, hd2);
+		vertices_grid.push_back(tmp);
+		normals_grid.push_back(normal);
+		colors_grid.push_back(color);
+
+		i += _grid_interval;
+	}
+
+	i = 0;
+	while (1) {
+		if (i > hd2) {
+			break;
+		}
+		tmp = vec3(wd2, 0.01, -i);
+		vertices_grid.push_back(tmp);
+		normals_grid.push_back(normal);
+		colors_grid.push_back(color);
+
+		tmp = vec3(-wd2, 0.01, -i);
+		vertices_grid.push_back(tmp);
+		normals_grid.push_back(normal);
+		colors_grid.push_back(color);
+
+		tmp = vec3(wd2, 0.01, i);
+		vertices_grid.push_back(tmp);
+		normals_grid.push_back(normal);
+		colors_grid.push_back(color);
+
+		tmp = vec3(-wd2, 0.01, i);
+		vertices_grid.push_back(tmp);
+		normals_grid.push_back(normal);
+		colors_grid.push_back(color);
+
+		i += _grid_interval;
+	}
+
+	glGenBuffers(1, &vertex_buffer_grid);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_grid);
+	glBufferData(GL_ARRAY_BUFFER
+		, sizeof(vec3)  * vertices_grid.size()
+		, &vertices_grid[0]
+		, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &normal_buffer_grid);
+	glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_grid);
+	glBufferData(GL_ARRAY_BUFFER
+		, sizeof(vec3) * normals_grid.size()
+		, &normals_grid[0]
+		, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &color_buffer_grid);
+	glBindBuffer(GL_ARRAY_BUFFER, color_buffer_grid);
+	glBufferData(GL_ARRAY_BUFFER
+		, sizeof(vec3) * colors_grid.size()
+		, &colors_grid[0]
+		, GL_STATIC_DRAW);
+	number_of_indices = vertices_grid.size();
+
 }
 
 
@@ -394,4 +484,207 @@ void Ground::Render() {
 
 
 
+void Ground::RenderGrid() {
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
 
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_grid);
+	glVertexAttribPointer(
+		0
+		, 3
+		, GL_FLOAT
+		, GL_FALSE
+		, 0
+		, (void *)0
+		);
+	glBindBuffer(GL_ARRAY_BUFFER, color_buffer_grid);
+	glVertexAttribPointer(
+		1
+		, 3
+		, GL_FLOAT
+		, GL_FALSE
+		, 0
+		, (void *)0
+		);
+	glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_grid);
+	glVertexAttribPointer(
+		2
+		, 3
+		, GL_FLOAT
+		, GL_FALSE
+		, 0
+		, (void *)0
+		);
+
+	glDrawArrays(GL_LINES, 0, number_of_indices);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+}
+
+void Ground::InitChessBoard(GLfloat _width, GLfloat _height, GLfloat _interval) {
+	GLfloat wd2, hd2;
+	wd2 = _width / 2.0; hd2 = _height / 2.0;
+
+	vec3 c1 = vec3(1, 1, 1);
+	vec3 c2 = vec3(0.7, 0.7, 0.7);
+	vec3 cc[2] = { c1, c2 };
+
+	std::vector<vec3> vertices_chess;
+	std::vector<vec3> normals_chess;
+	std::vector<vec3> colors_chess;
+
+	vec3 base1 = vec3(0, 0, 0);
+	vec3 base2 = vec3(0, 0, -_interval);
+	vec3 base3 = vec3(_interval, 0, -_interval);
+	vec3 base4 = vec3(_interval, 0, 0);
+
+	vec3 bb[6] = {
+		base1, base3, base2
+		, base1, base4, base3
+	};
+
+	vec3 bbo[6] = {
+		base1, base3, base2
+		, base1, base4, base3
+	};
+
+	vec3 normal = vec3(0, 0, 1);
+	vec3 normal_inv = vec3(0, 0, -1);
+	mat3 A1 = mat3{
+		-1, 0, 0
+		, 0, 1, 0
+		, 0, 0, 1
+	};
+	mat3 A2 = mat3{
+		1, 0, 0
+		, 0, 1, 0
+		, 0, 0, -1
+	};
+	mat3 A3 = mat3{
+		-1, 0, 0
+		, 0, 1, 0
+		, 0, 0, -1
+	};
+
+	int ii;
+
+
+
+	//\Žš‚ð•`‚­
+	GLfloat i, j; i = 0, j = 0;
+
+	while (1) {
+		if (j > hd2) break;
+		i = 0;
+		while (1) {
+			if (i > wd2) { break; }
+
+			for (ii = 0; ii < 6; ii++) {
+				bb[ii] = bbo[ii] + vec3(i, 0, -j);
+			}
+
+			for (ii = 0; ii < 6; ii++) {
+				vertices_chess.push_back(bb[ii]);
+				normals_chess.push_back(normal);
+				colors_chess.push_back(cc[(int)(i + j) % 2]);
+			}
+
+
+			for (ii = 0; ii < 6; ii++) {
+				bb[ii] = A1 * (bbo[ii] + vec3(i, 0, -j));
+			}
+			for (ii = 0; ii < 6; ii++) {
+				vertices_chess.push_back(bb[5 - ii]);
+				normals_chess.push_back(normal);
+				colors_chess.push_back(cc[(int)(i + j + 1) % 2]);
+			}
+
+			for (ii = 0; ii < 6; ii++) {
+				bb[ii] = A2 * (bbo[ii] + vec3(i, 0, -j));
+			}
+			for (ii = 0; ii < 6; ii++) {
+				vertices_chess.push_back(bb[5 - ii]);
+				normals_chess.push_back(normal);
+				colors_chess.push_back(cc[(int)(i + j + 1) % 2]);
+			}
+
+			for (ii = 0; ii < 6; ii++) {
+				bb[ii] = A3 * (bbo[ii] + vec3(i, 0, -j));
+			}
+			for (ii = 0; ii < 6; ii++) {
+				vertices_chess.push_back(bb[ii]);
+				normals_chess.push_back(normal);
+				colors_chess.push_back(cc[(int)(i + j) % 2]);
+			}
+
+			i += _interval;
+		}
+		j += _interval;
+	}
+
+	glGenBuffers(1, &vertex_buffer_chess);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_chess);
+	glBufferData(GL_ARRAY_BUFFER
+		, sizeof(vec3)  * vertices_chess.size()
+		, &vertices_chess[0]
+		, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &normal_buffer_chess);
+	glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_chess);
+	glBufferData(GL_ARRAY_BUFFER
+		, sizeof(vec3) * normals_chess.size()
+		, &normals_chess[0]
+		, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &color_buffer_chess);
+	glBindBuffer(GL_ARRAY_BUFFER, color_buffer_chess);
+	glBufferData(GL_ARRAY_BUFFER
+		, sizeof(vec3) * colors_chess.size()
+		, &colors_chess[0]
+		, GL_STATIC_DRAW);
+	number_of_vertices_chess = vertices_chess.size();
+
+
+}
+void Ground::RenderChess() {
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_chess);
+	glVertexAttribPointer(
+		0
+		, 3
+		, GL_FLOAT
+		, GL_FALSE
+		, 0
+		, (void *)0
+		);
+	glBindBuffer(GL_ARRAY_BUFFER, color_buffer_chess);
+	glVertexAttribPointer(
+		1
+		, 3
+		, GL_FLOAT
+		, GL_FALSE
+		, 0
+		, (void *)0
+		);
+	glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_chess);
+	glVertexAttribPointer(
+		2
+		, 3
+		, GL_FLOAT
+		, GL_FALSE
+		, 0
+		, (void *)0
+		);
+
+	glDrawArrays(GL_TRIANGLES, 0, number_of_vertices_chess);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+}
