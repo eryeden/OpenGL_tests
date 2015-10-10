@@ -47,6 +47,20 @@
 
 #define USE_POSTPROCESS
 
+/*
+	a fllow of shadow mapping
+
+	#1 render the scene from the point of view if the light, only the depth of each fragment is computed.
+	Redner from the point of the light source position. Only compute the depth of each fragemt
+
+	#2 The scene is rednered as usual, but with an extra test to see it the current fragment is in the shadow.
+	Test the current frament is in the shadow.
+
+*/
+
+
+
+
 namespace Space {
 
 
