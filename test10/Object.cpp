@@ -4,12 +4,38 @@ using namespace Space;
 using namespace glm;
 
 
+const mat3 Utility::A_WorldToGLSpace = mat3(
+	vec3(0, 0, 1)
+	, vec3(1, 0, 0)
+	, vec3(0, 1, 0)
+	);
+
+const mat4 Utility::Att_WorldToGLSpace = mat4(
+	vec4(0, 0, 1, 0)
+	, vec4(1, 0, 0, 0)
+	, vec4(0, 1, 0, 0)
+	, vec4(0, 0, 0, 1)
+	);
+
+const vec3 Utility::ConvertWorldToGLSpace(const vec3 & _in) {
+	return A_WorldToGLSpace * _in;
+}
+
+const mat4 Utility::ConvertWorldToGLSpace(const mat4 & _in) {
+	return Att_WorldToGLSpace * _in;
+}
+
+
 Object::Object()
 	:importer()
 	, M(mat4(1.0f))
 	, M_translate(mat4(1.0f))
 	, M_attitude(mat4(1.0f))
 {
+	
+	//M = Utility::ConvertWorldToGLSpace(M);
+	//M_translate = Utility::ConvertWorldToGLSpace(M_translate);
+	//M_attitude = Utility::ConvertWorldToGLSpace(M_attitude);
 	M = M_translate * M_attitude;
 	color_object = vec3(1.0f, 1.0f, 1.0f);
 	UpdateM();
@@ -31,11 +57,13 @@ void Object::LoadModel(
 }
 
 void Object::SetObjectPositionModelSpace(const glm::vec3 & _position) {
+	//M_translate = translate(mat4(1.0f), Utility::ConvertWorldToGLSpace(_position));
 	M_translate = translate(mat4(1.0f), _position);
 	M = M_translate * M_attitude;
 }
 
 void Object::SetObjectAttitude(const glm::mat4 & _attitude) {
+	//M_attitude = Utility::ConvertWorldToGLSpace(_attitude);
 	M_attitude = _attitude;
 	M = M_translate * M_attitude;
 }
@@ -82,15 +110,17 @@ void Object::UpdateM() {
 
 
 Model::Model() {
-	position_worldspace = vec3(0.0, 0.0, 0.0);
-	attitude_model = rotate(mat4(1.0), 0.0f, vec3(0, 0, 1.0));
+	//M_translate = translate(mat4(1.0f), Utility::ConvertWorldToGLSpace(vec3(0.0, 0.0, 0.0)));
+	//M_attitude = Utility::ConvertWorldToGLSpace(rotate(mat4(1.0), 0.0f, vec3(0, 0, 1.0)));
+
+	M_translate = translate(mat4(1.0f), Utility::ConvertWorldToGLSpace(vec3(0.0, 0.0, 0.0)));
+	M_attitude = Utility::ConvertWorldToGLSpace(rotate(mat4(1.0), 0.0f, vec3(0, 0, 1.0)));
+
 	UpdateM();
 	InitializeAxis();
 }
 
 void Model::UpdateM() {
-	M_translate = translate(mat4(1.0f), position_worldspace);
-	M_attitude = attitude_model;
 	M = M_translate * M_attitude;
 }
 
@@ -99,14 +129,12 @@ void Model::AddObject(Space::Object * _object) {
 }
 
 void Model::SetModelPositionWorldSpace(const glm::vec3 & _position) {
-	position_worldspace = _position;
-	M_translate = translate(mat4(1.0f), position_worldspace);
+	M_translate = translate(mat4(1.0f), Utility::ConvertWorldToGLSpace(_position));
 	M = M_translate * M_attitude;
 }
 
 void Model::SetModelAttitude(const glm::mat4 & _attitude) {
-	attitude_model = _attitude;
-	M_attitude = attitude_model;
+	M_attitude = Utility::ConvertWorldToGLSpace(_attitude);
 	M = M_translate * M_attitude;
 }
 
@@ -291,8 +319,8 @@ void Model::RenderAxisShort() {
 
 
 Ground::Ground(GLfloat _width, GLfloat _height, GLfloat _grid_interval) {
-	GLfixed wd2 = _width / 2.0;
-	GLfixed hd2 = _height / 2.0;
+	GLfloat wd2 = _width / 2.0;
+	GLfloat hd2 = _height / 2.0;
 	GLfloat vertices_ground[] = {
 		  -wd2, hd2, 0
 		, -wd2, -hd2, 0
@@ -551,8 +579,7 @@ void Ground::InitChessBoard(GLfloat _width, GLfloat _height, GLfloat _interval) 
 		, base1, base4, base3
 	};
 
-	vec3 normal = vec3(0, 0, 1);
-	vec3 normal_inv = vec3(0, 0, -1);
+	vec3 normal = vec3(0, -1, 0);
 	mat3 A1 = mat3{
 		-1, 0, 0
 		, 0, 1, 0

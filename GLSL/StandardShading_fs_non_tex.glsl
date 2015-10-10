@@ -29,7 +29,7 @@ void main(){
 	// Light emission properties
 	// You probably want to put them as uniforms
 	vec3 LightColor = vec3(1,1,1);
-	float LightPower = 50.0f;
+	float LightPower = 1200.0f;
 	
 	// Material properties
 	//use fragment color as DiffuseColor from Vertex shader
@@ -62,12 +62,21 @@ void main(){
 	//  - Looking elsewhere -> < 1
 	float cosAlpha = clamp( dot( E,R ), 0,1 );
 	
-	color = 
+	vec3 cc = 
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +
 		// Diffuse : "color" of the object
-		MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
+		MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance * distance) +
 		// Specular : reflective highlight, like a mirror
-		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance);//(distance*distance);
+		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance * distance);
+
+	//color = 
+	//	// Ambient : simulates indirect lighting
+	//	MaterialAmbientColor +
+	//	// Diffuse : "color" of the object
+	//	MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
+	//	// Specular : reflective highlight, like a mirror
+	//	MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
+	color = cc * 1.3; //‚¿‚å‚¢‚Æ–¾‚é‚­‚·‚é“K“–
 
 }

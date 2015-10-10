@@ -71,6 +71,13 @@ namespace Space {
 	};
 
 	
+	class Utility {
+	public:
+		static const glm::mat3 A_WorldToGLSpace;
+		static const glm::mat4 Att_WorldToGLSpace;
+		static const glm::vec3 ConvertWorldToGLSpace(const glm::vec3 & _in);
+		static const glm::mat4 ConvertWorldToGLSpace(const glm::mat4 & _in);
+	};
 
 
 	class Object {
