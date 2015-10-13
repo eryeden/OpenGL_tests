@@ -101,6 +101,22 @@ void gl_execute2(GLFWwindow * window) {
 		, "./../../OpenGL/glsl/fxaa_fs2.glsl"
 		);
 
+	//world.BindShaderShadowMapping(
+	//	"./../../OpenGL/glsl/shadow_mapping_depth_vs.glsl"
+	//	, "./../../OpenGL/glsl/shadow_mapping_depth_fs.glsl"
+	//	, "./../../OpenGL/glsl/shadow_mapping_vs.glsl"
+	//	, "./../../OpenGL/glsl/shadow_mapping_fs.glsl"
+	//	);
+
+//#ifdef USE_SHADOWMAPPING
+	world.BindShaderShadowMapping(
+		"./../../OpenGL/glsl/shadow_mapping_depth_vs.glsl"
+		, "./../../OpenGL/glsl/shadow_mapping_depth_fs.glsl"
+		, "./../../OpenGL/glsl/shadow_mapping_standard_vs.glsl"
+		, "./../../OpenGL/glsl/shadow_mapping_standard_fs.glsl"
+		);
+//#endif
+
 	Space::Object obj, obj1, obj2;
 	Space::Object bldcm0, bldcm1, bldcm2, bldcm3, body;
 	Space::Model mdl, mdl1;
@@ -121,7 +137,7 @@ void gl_execute2(GLFWwindow * window) {
 
 
 #define __PI__ 	3.14159265359f
-	
+
 	world.SetPositionLight(vec3(30, 30, 30));
 
 	obj.SetObjectPositionModelSpace(vec3(20.0, 0.0, 0.0));
@@ -171,7 +187,8 @@ void gl_execute2(GLFWwindow * window) {
 	while (!glfwWindowShouldClose(window)) {
 		_update_fps_counter(window);
 
-		world.Render();
+		//world.Render();
+		world.RenderShadowMapping();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

@@ -89,21 +89,83 @@ void Object::Render(
 	if (importer.IsUseTexture()) {
 		glUseProgram(_info.id_shader_use_texture);
 
-		glUniformMatrix4fv(_info.id_handler_unifrom_MVP_use_texture, 1, GL_FALSE, &MVP[0][0]);
-		glUniformMatrix4fv(_info.id_handler_unifrom_M_use_texture, 1, GL_FALSE, &MM[0][0]);
-		glUniformMatrix4fv(_info.id_handler_unifrom_V_use_texture, 1, GL_FALSE, &_view[0][0]);
-		glUniform3f(_info.id_handler_unifrom_lightposition_use_texture
+		glUniformMatrix4fv(_info.id_handler_uniform_MVP_use_texture, 1, GL_FALSE, &MVP[0][0]);
+		glUniformMatrix4fv(_info.id_handler_uniform_M_use_texture, 1, GL_FALSE, &MM[0][0]);
+		glUniformMatrix4fv(_info.id_handler_uniform_V_use_texture, 1, GL_FALSE, &_view[0][0]);
+		glUniform3f(_info.id_handler_uniform_lightposition_use_texture
 			, _light_position.x, _light_position.y, _light_position.z);
 	}
 	else {
 		glUseProgram(_info.id_shader_non_texture);
 
-		glUniformMatrix4fv(_info.id_handler_unifrom_MVP_non_texture, 1, GL_FALSE, &MVP[0][0]);
-		glUniformMatrix4fv(_info.id_handler_unifrom_M_non_texture, 1, GL_FALSE, &MM[0][0]);
-		glUniformMatrix4fv(_info.id_handler_unifrom_V_non_texture, 1, GL_FALSE, &_view[0][0]);
-		glUniform3f(_info.id_handler_unifrom_lightposition_non_texture
+		glUniformMatrix4fv(_info.id_handler_uniform_MVP_non_texture, 1, GL_FALSE, &MVP[0][0]);
+		glUniformMatrix4fv(_info.id_handler_uniform_M_non_texture, 1, GL_FALSE, &MM[0][0]);
+		glUniformMatrix4fv(_info.id_handler_uniform_V_non_texture, 1, GL_FALSE, &_view[0][0]);
+		glUniform3f(_info.id_handler_uniform_lightposition_non_texture
 			, _light_position.x, _light_position.y, _light_position.z);
 	}
+
+	importer.Render();
+}
+
+//呼ぶ前にテクスチャのバインドと、アクティブ化が必要
+void Object::RenderShadowMapping(
+	const struct InfoShader & _info
+	, const glm::mat4 & _projection
+	, const glm::mat4 & _view
+	, const glm::mat4 & _model_modelspace
+	, const glm::mat4 & _Mattrix_worldspace_to_lightspace_shadowmapping
+	, const glm::vec3 & _light_position
+	, const GLfloat & _light_power
+	, const GLuint & _texture_depthmap
+	) {
+	mat4 MM = _model_modelspace * M;
+	mat4 MVP = _projection * _view * MM;
+	if (importer.IsUseTexture()) {
+		//glUseProgram(_info.id_shader_use_texture);
+
+		//glUniformMatrix4fv(_info.id_handler_uniform_MVP_use_texture, 1, GL_FALSE, &MVP[0][0]);
+		//glUniformMatrix4fv(_info.id_handler_uniform_M_use_texture, 1, GL_FALSE, &MM[0][0]);
+		//glUniformMatrix4fv(_info.id_handler_uniform_V_use_texture, 1, GL_FALSE, &_view[0][0]);
+		//glUniform3f(_info.id_handler_uniform_lightposition_use_texture
+		//	, _light_position.x, _light_position.y, _light_position.z);
+	}
+	else {
+		glUseProgram(_info.id_shader_shadowmapping2);
+
+		//Activate texture
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, _texture_depthmap);
+
+		glUniformMatrix4fv(_info.id_handler_uniform_MVP_shadowmapping, 1, GL_FALSE, &MVP[0][0]);
+		glUniformMatrix4fv(_info.id_handler_uniform_M_shadowmapping, 1, GL_FALSE, &MM[0][0]);
+		glUniformMatrix4fv(_info.id_handler_uniform_V_shadowmapping, 1, GL_FALSE, &_view[0][0]);
+		glUniformMatrix4fv(_info.id_handler_uniform_Mattrix_worldspace_to_lightspace_shadowmapping
+			, 1, GL_FALSE, &_Mattrix_worldspace_to_lightspace_shadowmapping[0][0]);
+		glUniform3f(_info.id_handler_uniform_lightposition_shadowmapping
+			, _light_position.x, _light_position.y, _light_position.z);
+
+
+		glUniform1i(_info.id_handler_uniform_texture_depthmap_shadowmapping, 0);
+
+	}
+
+	importer.Render();
+}
+
+
+void Object::RenderDepth(
+	const struct InfoShader & _info
+	, const glm::mat4 & _Mattrix_worldspace_to_lightspace
+	, const glm::mat4 & _model_modelspace
+	) {
+	mat4 MM = _model_modelspace * M;
+
+	glUseProgram(_info.id_shader_shadowmapping_depth);
+	glUniformMatrix4fv(_info.id_handler_uniform_shadowmapping_depth_Mattrix_worldspace_to_lightspace
+		, 1, GL_FALSE, &_Mattrix_worldspace_to_lightspace[0][0]);
+	glUniformMatrix4fv(_info.id_handler_uniform_shadowmapping_depth_Model
+		, 1, GL_FALSE, &MM[0][0]);
 
 	importer.Render();
 }
@@ -151,26 +213,95 @@ void Model::Render(
 	) {
 
 	for (size_t i = 0; i < objects.size(); ++i) {
-		objects[i]->Render(_info
+		objects[i]->Render(
+			_info
 			, _projection
 			, _view
 			, M
 			, _light_position
-			, _light_power);
+			, _light_power
+			);
 		RenderAxisShort();
 	}
 
 	mat4 MVP = _projection * _view * M;
 	glUseProgram(_info.id_shader_non_texture);
-	glUniformMatrix4fv(_info.id_handler_unifrom_MVP_non_texture
+
+
+
+	glUniformMatrix4fv(_info.id_handler_uniform_MVP_non_texture
 		, 1, GL_FALSE, &MVP[0][0]);
-	glUniformMatrix4fv(_info.id_handler_unifrom_M_non_texture
+	glUniformMatrix4fv(_info.id_handler_uniform_M_non_texture
 		, 1, GL_FALSE, &M[0][0]);
-	glUniformMatrix4fv(_info.id_handler_unifrom_V_non_texture
+	glUniformMatrix4fv(_info.id_handler_uniform_V_non_texture
 		, 1, GL_FALSE, &_view[0][0]);
-	glUniform3f(_info.id_handler_unifrom_lightposition_non_texture
+	glUniform3f(_info.id_handler_uniform_lightposition_non_texture
 		, _light_position.x, _light_position.y, _light_position.z);
 	RenderAxis();
+}
+
+//呼ぶ前にテクスチャのアクティブ化とバインドが必要
+void Model::RenderShadowMapping(
+	const struct InfoShader & _info
+	, const glm::mat4 & _projection
+	, const glm::mat4 & _view
+	, const glm::mat4 & _Mattrix_worldspace_to_lightspace_shadowmapping
+	, const glm::vec3 & _light_position
+	, const GLfloat & _light_power
+	, const GLuint & _texture_depthmap
+	) {
+
+	for (size_t i = 0; i < objects.size(); ++i) {
+		objects[i]->RenderShadowMapping(
+			_info
+			, _projection
+			, _view
+			, M
+			, _Mattrix_worldspace_to_lightspace_shadowmapping
+			, _light_position
+			, _light_power
+			, _texture_depthmap
+			);
+		RenderAxisShort();
+	}
+
+	glUseProgram(_info.id_shader_shadowmapping2);
+
+	//Activate texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _texture_depthmap);
+
+	mat4 MVP = _projection * _view * M;
+	glUseProgram(_info.id_shader_non_texture);
+	glUniformMatrix4fv(_info.id_handler_uniform_MVP_non_texture
+		, 1, GL_FALSE, &MVP[0][0]);
+	glUniformMatrix4fv(_info.id_handler_uniform_M_non_texture
+		, 1, GL_FALSE, &M[0][0]);
+	glUniformMatrix4fv(_info.id_handler_uniform_V_non_texture
+		, 1, GL_FALSE, &_view[0][0]);
+	glUniform3f(_info.id_handler_uniform_lightposition_non_texture
+		, _light_position.x, _light_position.y, _light_position.z);
+	glUniformMatrix4fv(_info.id_handler_uniform_Mattrix_worldspace_to_lightspace_shadowmapping
+		, 1, GL_FALSE, &_Mattrix_worldspace_to_lightspace_shadowmapping[0][0]);
+
+	glUniform1i(_info.id_handler_uniform_texture_depthmap_shadowmapping, 0);
+
+	RenderAxis();
+}
+
+
+void Model::RenderDepth(
+	const struct InfoShader & _info
+	, const glm::mat4 & _Mattrix_worldspace_to_lightspace
+	) {
+
+	for (size_t i = 0; i < objects.size(); ++i) {
+		objects[i]->RenderDepth(
+			_info
+			, _Mattrix_worldspace_to_lightspace
+			, M
+			);
+	}
 }
 
 void Model::InitializeAxis() {

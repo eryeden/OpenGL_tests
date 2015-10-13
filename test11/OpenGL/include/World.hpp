@@ -45,7 +45,9 @@
 
 #include "PostProcessing.hpp"
 
-#define USE_POSTPROCESS
+//#define USE_POSTPROCESS
+
+#define USE_SHADOWMAPPING
 
 /*
 	a fllow of shadow mapping
@@ -74,28 +76,47 @@ namespace Space {
 		GLuint id_shader_postprocess_filter;
 
 		GLuint id_shader_shadowmapping_depth;
-		GLuint id_shader_shadowmapping;
+		//GLuint id_shader_shadowmapping;
+
+		GLuint id_shader_shadowmapping2;
 
 
-		//UnifromID
-		GLuint id_handler_unifrom_MVP_use_texture;
-		GLuint id_handler_unifrom_V_use_texture;
-		GLuint id_handler_unifrom_M_use_texture;
-		GLuint id_handler_unifrom_lightposition_use_texture;
+		//uniformID
+		GLuint id_handler_uniform_MVP_use_texture;
+		GLuint id_handler_uniform_V_use_texture;
+		GLuint id_handler_uniform_M_use_texture;
+		GLuint id_handler_uniform_lightposition_use_texture;
 
-		GLuint id_handler_unifrom_MVP_non_texture;
-		GLuint id_handler_unifrom_V_non_texture;
-		GLuint id_handler_unifrom_M_non_texture;
-		GLuint id_handler_unifrom_lightposition_non_texture;
+		GLuint id_handler_uniform_MVP_non_texture;
+		GLuint id_handler_uniform_V_non_texture;
+		GLuint id_handler_uniform_M_non_texture;
+		GLuint id_handler_uniform_lightposition_non_texture;
 
-		GLuint id_handler_unifrom_shadowmapping_depth_Mattrix_worldspace_to_lightspace;
-		GLuint id_handler_unifrom_shadowmapping_depth_Model;
+		//Shadowmapping depth
+		GLuint id_handler_uniform_shadowmapping_depth_Mattrix_worldspace_to_lightspace;
+		GLuint id_handler_uniform_shadowmapping_depth_Model;
 
 
+		//Shadowmapping
+		//GLuint id_handler_uniform_shadowmapping_projection;
+		//GLuint id_handler_uniform_shadowmapping_view;
+		//GLuint id_handler_uniform_shadowmapping_model;
+		//GLuint id_handler_uniform_shadowmapping_light_position;
+		//GLuint id_handler_uniform_shadowmapping_view_position;
+		//GLuint id_handler_uniform_shadowmapping_mattrix_worldspace_to_lightspace;
+		//GLuint id_handler_uniform_shadowmapping_texture_depth;
+		
+		//Shadowmapping2
+		GLuint id_handler_uniform_MVP_shadowmapping;
+		GLuint id_handler_uniform_V_shadowmapping;
+		GLuint id_handler_uniform_M_shadowmapping;
+		GLuint id_handler_uniform_lightposition_shadowmapping;
+		GLuint id_handler_uniform_Mattrix_worldspace_to_lightspace_shadowmapping;
+		GLuint id_handler_uniform_texture_depthmap_shadowmapping;
 
 	};
 
-	
+
 	class Utility {
 	public:
 		static const glm::mat3 A_WorldToGLSpace;
@@ -127,16 +148,36 @@ namespace Space {
 			, const GLfloat & _light_power
 			);
 
-		//DepthMap取得時レンダリング
-		void Render(
+
+		//uniform mat4 projection;
+		//uniform mat4 view;
+		//uniform mat4 model;
+		//uniform mat4 Matrix_Worldspace_to_Lightspace;
+		//uniform sampler2D shadowMap;
+		//uniform vec3 lightPos;
+		//uniform vec3 viewPos;
+		//ForShadowMapping
+		void RenderShadowMapping(
 			const struct InfoShader & _info
-			, const glm::mat4 & _Mattrix_worldspace_to_lightspace
+			, const glm::mat4 & _projection
+			, const glm::mat4 & _view
+			, const glm::mat4 & _model_modelspace
+			, const glm::mat4 & _Mattrix_worldspace_to_lightspace_shadowmapping
+			, const glm::vec3 & _light_position
+			, const GLfloat & _light_power
+			, const GLuint & _texture_depthmap
+			);
+
+		//DepthMap取得時レンダリング
+		void RenderDepth(
+			const struct InfoShader & _info
+			, const glm::mat4 & _Matrix_worldspace_to_lightspace
 			, const glm::mat4 & _model_modelspace
 			);
 
 		MdlImporter importer;
 	private:
-		
+
 
 		//glm::vec3 position_modelspace;
 		//glm::mat4 attitude_object;
@@ -163,10 +204,22 @@ namespace Space {
 			, const GLfloat & _light_power
 			);
 
-		//DepthMap取得時レンダリング
-		void Render(
+
+		//ForShadowMapping
+		void RenderShadowMapping(
 			const struct InfoShader & _info
-			, const glm::mat4 & _Mattrix_worldspace_to_lightspace
+			, const glm::mat4 & _projection
+			, const glm::mat4 & _view
+			, const glm::mat4 & _Mattrix_worldspace_to_lightspace_shadowmapping
+			, const glm::vec3 & _light_position
+			, const GLfloat & _light_power
+			, const GLuint & _texture_depthmap
+			);
+
+		//DepthMap取得時レンダリング
+		void RenderDepth(
+			const struct InfoShader & _info
+			, const glm::mat4 & _Matrix_worldspace_to_lightspace
 			);
 
 		void AddObject(Space::Object * _object);
@@ -183,7 +236,7 @@ namespace Space {
 		glm::mat4 M_translate;
 		glm::mat4 M_attitude;
 
-		
+
 
 		void UpdateM();
 
@@ -196,7 +249,7 @@ namespace Space {
 		GLuint normal_buffer_axis;
 	};
 
-		class Ground {
+	class Ground {
 	public:
 		Ground(GLfloat _width, GLfloat _height, GLfloat _grid_interval);
 		void InitChessBoard(GLfloat _width, GLfloat _height, GLfloat _interval);
@@ -206,7 +259,7 @@ namespace Space {
 
 	private:
 
-		
+
 		GLuint vertex_buffer_ground;
 		GLuint color_buffer_ground;
 		GLuint normal_buffer_ground;
@@ -242,6 +295,18 @@ namespace Space {
 			, const std::string & _path_to_vshader_filter
 			, const std::string & _path_to_fshader_filter);
 
+#ifdef USE_SHADOWMAPPING
+		//ShadowMapping用シェーダー読み込み
+		void BindShaderShadowMapping(
+			const std::string & _path_to_vshader_depth
+			, const std::string & _path_to_fshader_depth
+			, const std::string & _path_to_vshader_shadowmapping
+			, const std::string & _path_to_fshader_shadowmapping
+			);
+
+		void RenderShadowMapping();
+#endif
+
 		void SetPositionCamera(const glm::vec3 & _position_cam);
 		void SetPositionLight(const glm::vec3 & _position_light);
 		void SetPowerLight(const GLfloat & _power);
@@ -270,16 +335,23 @@ namespace Space {
 		GLuint id_shader_postprocess_passthrough;
 		GLuint id_shader_postprocess_filter;
 
-		//UnifromID
-		GLuint id_handler_unifrom_MVP_use_texture;
-		GLuint id_handler_unifrom_V_use_texture;
-		GLuint id_handler_unifrom_M_use_texture;
-		GLuint id_handler_unifrom_lightposition_use_texture;
+		GLuint id_shader_shadowmapping_depth;
+		GLuint id_shader_shadowmapping;
 
-		GLuint id_handler_unifrom_MVP_non_texture;
-		GLuint id_handler_unifrom_V_non_texture;
-		GLuint id_handler_unifrom_M_non_texture;
-		GLuint id_handler_unifrom_lightposition_non_texture;
+		//Shadowmapping2
+		GLuint id_shader_shadowmapping2;
+
+		//uniformID
+		GLuint id_handler_uniform_MVP_use_texture;
+		GLuint id_handler_uniform_V_use_texture;
+		GLuint id_handler_uniform_M_use_texture;
+		GLuint id_handler_uniform_lightposition_use_texture;
+
+
+		GLuint id_handler_uniform_MVP_non_texture;
+		GLuint id_handler_uniform_V_non_texture;
+		GLuint id_handler_uniform_M_non_texture;
+		GLuint id_handler_uniform_lightposition_non_texture;
 
 		glm::mat4 Projection; //プロジェクション行列
 		glm::mat4 View;       //視点変換行列
@@ -296,6 +368,22 @@ namespace Space {
 
 #ifdef USE_POSTPROCESS
 		PostProcessingFXAA *pp_fxaa;
+#endif
+
+#ifdef USE_SHADOWMAPPING
+		//##################### FOR SHADOW MAPPING #########################
+
+		void InitShadowMapping();
+
+
+		GLuint fbo_depthmap;
+		const GLuint SHADOW_WIDTH, SHADOW_HEIGHT;
+		GLuint texture_depthmap;
+		glm::mat4 Matrix_worldspace_to_lightspace;
+		glm::mat4 Matrix_lightprojection;
+		glm::mat4 Matrix_lightview;
+
+		//##################### FOR SHADOW MAPPING #########################
 #endif
 
 	};
