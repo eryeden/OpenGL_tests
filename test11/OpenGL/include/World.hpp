@@ -72,6 +72,11 @@ namespace Space {
 		GLuint id_shader_non_texture;
 		GLuint id_shader_postprocess_passthrough;
 		GLuint id_shader_postprocess_filter;
+
+		GLuint id_shader_shadowmapping_depth;
+		GLuint id_shader_shadowmapping;
+
+
 		//UnifromID
 		GLuint id_handler_unifrom_MVP_use_texture;
 		GLuint id_handler_unifrom_V_use_texture;
@@ -82,6 +87,12 @@ namespace Space {
 		GLuint id_handler_unifrom_V_non_texture;
 		GLuint id_handler_unifrom_M_non_texture;
 		GLuint id_handler_unifrom_lightposition_non_texture;
+
+		GLuint id_handler_unifrom_shadowmapping_depth_Mattrix_worldspace_to_lightspace;
+		GLuint id_handler_unifrom_shadowmapping_depth_Model;
+
+
+
 	};
 
 	
@@ -115,6 +126,14 @@ namespace Space {
 			, const glm::vec3 & _light_position
 			, const GLfloat & _light_power
 			);
+
+		//DepthMap取得時レンダリング
+		void Render(
+			const struct InfoShader & _info
+			, const glm::mat4 & _Mattrix_worldspace_to_lightspace
+			, const glm::mat4 & _model_modelspace
+			);
+
 		MdlImporter importer;
 	private:
 		
@@ -142,6 +161,12 @@ namespace Space {
 			, const glm::mat4 & _view
 			, const glm::vec3 & _light_position
 			, const GLfloat & _light_power
+			);
+
+		//DepthMap取得時レンダリング
+		void Render(
+			const struct InfoShader & _info
+			, const glm::mat4 & _Mattrix_worldspace_to_lightspace
 			);
 
 		void AddObject(Space::Object * _object);

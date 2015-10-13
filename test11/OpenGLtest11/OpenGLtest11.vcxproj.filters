@@ -60,4 +60,14 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\OpenGL\glsl\shadow_mapping_depth_fs.glsl" />
+    <None Include="..\OpenGL\glsl\shadow_mapping_depth_vs.glsl" />
+    <None Include="..\OpenGL\glsl\shadow_mapping_fs.glsl" />
+    <None Include="..\OpenGL\glsl\shadow_mapping_vs.glsl" />
+    <None Include="..\OpenGL\glsl\StandardShading_fs.glsl" />
+    <None Include="..\OpenGL\glsl\StandardShading_fs_non_tex.glsl" />
+    <None Include="..\OpenGL\glsl\StandardShading_vs.glsl" />
+    <None Include="..\OpenGL\glsl\StandardShading_vs_non_tex.glsl" />
+  </ItemGroup>
 </Project>
