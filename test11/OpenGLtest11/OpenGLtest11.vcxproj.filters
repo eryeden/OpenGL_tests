@@ -71,5 +71,9 @@
     <None Include="..\OpenGL\glsl\StandardShading_vs_non_tex.glsl" />
     <None Include="..\OpenGL\glsl\shadow_mapping_standard_fs.glsl" />
     <None Include="..\OpenGL\glsl\shadow_mapping_standard_vs.glsl" />
+    <None Include="..\OpenGL\glsl\fxaa_fs2.glsl" />
+    <None Include="..\OpenGL\glsl\fxaa_vs2.glsl" />
+    <None Include="..\OpenGL\glsl\depth_viewer_fs.glsl" />
+    <None Include="..\OpenGL\glsl\depth_viewer_vs.glsl" />
   </ItemGroup>
 </Project>

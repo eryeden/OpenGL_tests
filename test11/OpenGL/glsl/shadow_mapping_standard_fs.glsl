@@ -34,12 +34,27 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     return shadow;
 }
 
+float ShadowCalculation_depth(vec4 fragPosLightSpace)
+{
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // Transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // Get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    // Get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // Check whether current frag pos is in shadow
+    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+    return closestDepth;
+}
+
 
 void main(){
     // Light emission properties
 	// You probably want to put them as uniforms
 	vec3 LightColor = vec3(1,1,1);
-    float LightPower = 1200.0f;
+    float LightPower = 2500.0f;
     // Material properties
 	//use fragment color as DiffuseColor from Vertex shader
 	vec3 MaterialDiffuseColor = Fragment_color;
@@ -91,6 +106,8 @@ void main(){
 		// Specular : reflective highlight, like a mirror
 		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance * distance)
 		);
+
+	//vec3 cc = vec3(ShadowCalculation_depth(FragmentPosition_lightspace));
   
     //color = 
 	//	// Ambient : simulates indirect lighting

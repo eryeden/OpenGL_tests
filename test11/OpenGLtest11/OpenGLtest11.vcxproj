@@ -149,6 +149,10 @@
     <ClInclude Include="..\OpenGL\include\World.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\OpenGL\glsl\depth_viewer_fs.glsl" />
+    <None Include="..\OpenGL\glsl\depth_viewer_vs.glsl" />
+    <None Include="..\OpenGL\glsl\fxaa_fs2.glsl" />
+    <None Include="..\OpenGL\glsl\fxaa_vs2.glsl" />
     <None Include="..\OpenGL\glsl\shadow_mapping_depth_fs.glsl" />
     <None Include="..\OpenGL\glsl\shadow_mapping_depth_vs.glsl" />
     <None Include="..\OpenGL\glsl\shadow_mapping_fs.glsl" />

@@ -69,8 +69,11 @@ void World::InitShadowMapping() {
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	GLfloat near_plane = 1.0f, far_plane = 7.5f;
-	Matrix_lightprojection =		ortho(-10.0f, 10.0f, -10.0f, 10.0f			, near_plane, far_plane);	Matrix_lightview = lookAt(position_light, vec3(0.0f), vec3(1.0));
+	GLfloat near_plane = 1.0f, far_plane = 1000.0f;	   //âìÇ¢ñ Ç™è¨Ç≥Ç¢Ç∆ÇªÇÍÇÊÇËâìÇ≠Ç…âeÇÕÇ≈Ç´Ç»Ç¢ÇÃÇ≈íçà”
+	Matrix_lightprojection =
+		ortho(-10.0f, 10.0f, -10.0f, 10.0f
+			, near_plane, far_plane);
+	Matrix_lightview = lookAt(position_light, vec3(0.0f), vec3(0.0f, 0.0f, 1.0f));
 	Matrix_worldspace_to_lightspace = Matrix_lightprojection * Matrix_lightview;
 }
 #endif
@@ -247,7 +250,7 @@ void World::SetPositionLight(const glm::vec3 & _position_light) {
 
 #ifdef USE_SHADOWMAPPING
 	//For ShadowMapping
-	Matrix_lightview = lookAt(position_light, vec3(0.0f), vec3(1.0f, 1.0f, 1.0f));
+	Matrix_lightview = lookAt(position_light, vec3(0.0f), vec3(0.0f, 0.0f, 1.0f));
 	Matrix_worldspace_to_lightspace = Matrix_lightprojection * Matrix_lightview;
 
 #endif
@@ -338,8 +341,11 @@ void World::RenderShadowMapping() {
 		, 0.0f, 0.0f, 0.0f, 1.0f
 		);
 
-	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo_depthmap);
+	glUseProgram(info.id_shader_shadowmapping_depth);
+
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -352,8 +358,6 @@ void World::RenderShadowMapping() {
 	}
 
 	//Render Ground
-
-
 	mat4 MVP_depth = Matrix_worldspace_to_lightspace * M;
 	glUseProgram(info.id_shader_shadowmapping_depth);
 
