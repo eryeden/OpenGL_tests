@@ -45,7 +45,7 @@
 
 #include "PostProcessing.hpp"
 
-//#define USE_POSTPROCESS
+#define USE_POSTPROCESS
 
 #define USE_SHADOWMAPPING
 

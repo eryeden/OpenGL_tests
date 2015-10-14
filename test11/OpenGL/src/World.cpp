@@ -56,8 +56,10 @@ void World::InitShadowMapping() {
 		, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	//フレームバッファの設定を行う
 	//ここでは深度マップのみが必要なのでカラーマップは計算する必要はない
@@ -69,7 +71,7 @@ void World::InitShadowMapping() {
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	GLfloat near_plane = 1.0f, far_plane = 1000.0f;	   //遠い面が小さいとそれより遠くに影はできないので注意
+	GLfloat near_plane = 0.1f, far_plane = 1000.0f;	   //遠い面が小さいとそれより遠くに影はできないので注意
 	Matrix_lightprojection =
 		ortho(-10.0f, 10.0f, -10.0f, 10.0f
 			, near_plane, far_plane);
@@ -349,6 +351,9 @@ void World::RenderShadowMapping() {
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 
+	//glCullFace(GL_FRONT);
+	
+
 	//Render models
 	for (size_t i = 0; i < models.size(); ++i) {
 		models[i]->RenderDepth(
@@ -367,6 +372,9 @@ void World::RenderShadowMapping() {
 		, 1, GL_FALSE, &M[0][0]);
 	gnd.RenderChess();
 
+	//glCullFace(GL_BACK); // don't forget to reset original culling face
+	
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
@@ -376,7 +384,7 @@ void World::RenderShadowMapping() {
 	pp_fxaa->Bind();
 #endif
 
-
+	
 
 	Projection = perspective(45.0f, (float)width / (float)height, 0.1f, 10000.0f);
 	//View = lookAt(position_camera
