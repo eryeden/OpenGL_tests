@@ -348,11 +348,9 @@ void World::RenderShadowMapping() {
 
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 
-
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	//glCullFace(GL_FRONT);
-	
 
 	//Render models
 	for (size_t i = 0; i < models.size(); ++i) {

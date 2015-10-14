@@ -21,7 +21,7 @@ uniform sampler2D shadowMap;
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
-	float bias = 0.001;
+	float bias = 0.0002;
     // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     // Transform to [0,1] range
@@ -34,6 +34,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     // Check whether current frag pos is in shadow
     float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
 		
+	//テクスチャ外だったら影でないとする
 	if(projCoords.z > 1.0){
         shadow = 0.0;
 	}
@@ -61,11 +62,11 @@ void main(){
     // Light emission properties
 	// You probably want to put them as uniforms
 	vec3 LightColor = vec3(1,1,1);
-    float LightPower = 2500.0f;
+    float LightPower = 4000.0f;
     // Material properties
 	//use fragment color as DiffuseColor from Vertex shader
 	vec3 MaterialDiffuseColor = Fragment_color;
-    vec3 MaterialAmbientColor = vec3(0.1, 0.1, 0.1) * MaterialDiffuseColor;
+    vec3 MaterialAmbientColor = vec3(0.2, 0.2, 0.2) * MaterialDiffuseColor;
     //vec3(0.1,0.1,0.1) * MaterialDiffuseColor;
 	vec3 MaterialSpecularColor = vec3(0.3,0.3,0.3);
     // Distance to the light
@@ -123,7 +124,11 @@ void main(){
 	//	MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
 	//	// Specular : reflective highlight, like a mirror
 	//	MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
-	color = cc * 1.0;
+	if(shadow == 0.0){
+		color = cc * 1.3;
+	}else{
+		color = cc * 0.8;
+	}
     //ちょいと明るくする適当
 
 }

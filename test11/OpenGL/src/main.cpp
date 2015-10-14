@@ -138,7 +138,7 @@ void gl_execute2(GLFWwindow * window) {
 
 #define __PI__ 	3.14159265359f
 
-	world.SetPositionLight(vec3(30, 30, 30));
+	world.SetPositionLight(vec3(20, 50, 20));
 
 	obj.SetObjectPositionModelSpace(vec3(20.0, 0.0, 0.0));
 	obj.SetObjectAttitude(rotate(mat4(1.0f), (float)(__PI__ / 180.0 * 0), vec3(0.0, 0.0, 1.0)));
